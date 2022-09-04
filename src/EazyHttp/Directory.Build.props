@@ -1,0 +1,9 @@
+﻿<Project>
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <PackageVersion>0.1.6-alpha</PackageVersion>
+    <Authors>Chekko Milani</Authors>
+  </PropertyGroup>
+</Project>
