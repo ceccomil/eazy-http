@@ -56,13 +56,233 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
         CancellationToken cancellationToken = default)
         where TResult : class => await HttpAsync<TResult>(
             async (url, content) => await _httpClient
-                .GetAsync(url),
+                .GetAsync(url, cancellationToken),
             route,
             query,
             body: null,
             authHeader,
             additionalHeaders,
             cancellationToken);
+
+    /// <summary>
+    /// TODO docume
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="route"></param>
+    /// <param name="body"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<TResult?> PutAsync<TResult>(
+        string route,
+        object body,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default)
+        where TResult : class => await HttpAsync<TResult>(
+            async (url, content) =>
+            {
+                SetApplicationJson(content);
+
+                return await _httpClient
+                    .PutAsync(
+                        url,
+                        content,
+                        cancellationToken);
+            },
+            route,
+            query: null,
+            body,
+            authHeader,
+            additionalHeaders,
+            cancellationToken);
+
+    /// <summary>
+    /// TODO Docume
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="route"></param>
+    /// <param name="body"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<TResult?> PostAsync<TResult>(
+        string route,
+        object body,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default)
+        where TResult : class => await HttpAsync<TResult>(
+            async (url, content) =>
+            {
+                SetApplicationJson(content);
+
+                return await _httpClient
+                    .PostAsync(
+                        url,
+                        content,
+                        cancellationToken);
+            },
+            route,
+            query: null,
+            body,
+            authHeader,
+            additionalHeaders,
+            cancellationToken);
+
+    /// <summary>
+    /// TODO Document
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="route"></param>
+    /// <param name="query"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<TResult?> DeleteAsync<TResult>(
+        string route,
+        HttpQuery? query = default,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default)
+        where TResult : class => await HttpAsync<TResult>(
+            async (url, content) => await _httpClient
+                .DeleteAsync(url, cancellationToken),
+            route,
+            query,
+            body: null,
+            authHeader,
+            additionalHeaders,
+            cancellationToken);
+
+    /// <summary>
+    /// TODO docume
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="route"></param>
+    /// <param name="body"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<TResult?> PatchAsync<TResult>(
+        string route,
+        object body,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default)
+        where TResult : class => await HttpAsync<TResult>(
+            async (url, content) =>
+            {
+                SetApplicationJson(content);
+
+                return await _httpClient
+                    .PatchAsync(
+                        url,
+                        content,
+                        cancellationToken);
+            },
+            route,
+            query: null,
+            body,
+            authHeader,
+            additionalHeaders,
+            cancellationToken);
+
+    /// <summary>
+    /// TODO docume
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="route"></param>
+    /// <param name="elements"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<TResult?> PostFormAsync<TResult>(
+        string route,
+        IEnumerable<FormElement> elements,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default)
+        where TResult : class
+    {
+        var form = new MultipartFormDataContent();
+
+        foreach (var element in elements)
+        {
+            if (element.SendAsString ||
+                element.FileName is null)
+            {
+                form.Add(
+                    element.HttpElementContent,
+                    element.QueryParam);
+            }
+            else
+            {
+                form.Add(
+                    element.HttpElementContent,
+                    element.QueryParam,
+                    element.FileName);
+            }
+        }
+
+        return await HttpAsync<TResult>(
+            async (url, content) => await _httpClient
+                .SendAsync(
+                    new(HttpMethod.Post, url)
+                    {
+                        Content = form
+                    },
+                    cancellationToken),
+            route,
+            query: null,
+            body: null,
+            authHeader,
+            additionalHeaders,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// TODO docume
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="route"></param>
+    /// <param name="elements"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<TResult?> PostUrlEncodedFormAsync<TResult>(
+        string route,
+        IEnumerable<KeyValuePair<string?, string?>> elements,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default)
+        where TResult : class
+    {
+        var form = new FormUrlEncodedContent(
+            elements);
+
+        return await HttpAsync<TResult>(
+            async (url, content) => await _httpClient
+                .SendAsync(
+                    new(HttpMethod.Post, url)
+                    {
+                        Content = form
+                    },
+                    cancellationToken),
+            route,
+            query: null,
+            body: null,
+            authHeader,
+            additionalHeaders,
+            cancellationToken);
+    }
+
 
     private async Task<TResult?> HttpAsync<TResult>(
         Func<string, HttpContent?, Task<HttpResponseMessage>> sendAsync,
@@ -211,6 +431,17 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                 .DefaultRequestHeaders
                 .Remove(
                     h.Key);
+        }
+    }
+
+    private static void SetApplicationJson(
+        HttpContent? content)
+    {
+        if (content is not null)
+        {
+            content
+                .Headers
+                .ContentType = new("application/json");
         }
     }
 }
