@@ -14,8 +14,10 @@ public class EazyClientOptions
     /// <summary>
     /// TODO Documentation
     /// </summary>
-    public HttpClientsCollection EazyHttpClients { get; set; } = new()
-    {
-        new("DefaultEazyClient")
-    };
+    public HttpClientsCollection EazyHttpClients { get; set; } = new();
+
+    /// <summary>
+    /// TODO documentation
+    /// </summary>
+    public Dictionary<string, IEnumerable<RequestHeader>> PersistentHeaders { get; } = new();
 }

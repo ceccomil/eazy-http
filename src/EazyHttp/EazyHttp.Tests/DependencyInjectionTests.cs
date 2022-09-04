@@ -1,4 +1,5 @@
 using EazyHttp;
+using EazyHttp.Contracts;
 using EazyHttp.HttpClients;
 
 namespace EazyHttp.Tests;
@@ -10,16 +11,27 @@ public class DependencyInjectionTests
     public async Task Test1()
     {
         var services = new ServiceCollection()
-            .ConfigureEazyHttpClients()
-            //.ConfigureEazyHttpClients(opts =>
-            //{
-            //    opts.EazyHttpClients = new()
-            //    {
-            //        new("DefaultHttp", ""),
-            //        new("DefaultHttp1", "baseddr1"),
-            //        new("DefaultHttp2", "baseAddr2")
-            //    };
-            //})
+            .ConfigureEazyHttpClients(opts =>
+            {
+                opts
+                    .EazyHttpClients
+                    .Add(new("WeatherHttp", "https://localhost:7004/"));
+
+                opts
+                    .EazyHttpClients
+                    .Add(new("WeatherHttp1", "https://localhost:7004/"));
+
+                opts
+                    .PersistentHeaders
+                    .Add(
+                        "WeatherHttp",
+                        new RequestHeader[]
+                        {
+                            new("X-Persit1", "Persist 1 value"),
+                            new("X-Persit2", "Persist 2 value"),
+                        });
+
+            })
             .AddEazyHttpClients();
 
         using var sp = services.BuildServiceProvider();
@@ -27,11 +39,37 @@ public class DependencyInjectionTests
 
         //var test = Logs.Collection;
 
-        var apiUrl = "https://localhost:7175/WeatherForecast";
+        var clients = scope
+            .ServiceProvider
+            .GetRequiredService<IEazyClients>();
 
-        var client = scope.ServiceProvider.GetRequiredService<ISharedHttpClient>();
+        var result = await clients
+            .WeatherHttp
+            .GetAsync<IEnumerable<WeatherForecast>>(
+                "/WeatherForecast",
+                additionalHeaders: new RequestHeader[]
+                {
+                    new("X-First", "This is the value 1")
+                });
 
-        var result = await client.GetAsync<IEnumerable<WeatherForecast>>(apiUrl);
+        result = await clients
+            .WeatherHttp1
+            .GetAsync<IEnumerable<WeatherForecast>>(
+                "/WeatherForecast",
+                additionalHeaders: new RequestHeader[]
+                {
+                    new("X-Second", "This is the value 2")
+                });
+
+        result = await clients
+            .WeatherHttp
+            .GetAsync<IEnumerable<WeatherForecast>>(
+                "/WeatherForecast");
+
+        result = await clients
+            .WeatherHttp1
+            .GetAsync<IEnumerable<WeatherForecast>>(
+                "/WeatherForecast");
     }
 }
 

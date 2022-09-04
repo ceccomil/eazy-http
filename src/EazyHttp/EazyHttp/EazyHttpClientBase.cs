@@ -31,6 +31,18 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
     {
         _httpClient = httpClient;
         _options = options.Value;
+
+        var name = GetType()
+            .Name;
+
+        if (_options
+            .PersistentHeaders
+            .ContainsKey(name))
+        {
+            AddHeaders(
+                _options
+                .PersistentHeaders[name]);
+        }
     }
 
     /// <summary>
@@ -76,6 +88,8 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
             await GetContentFromBody(
                 body,
                 cancellationToken));
+
+        RemoveHeaders(additionalHeaders);
 
         ResponseCode = (int)response.StatusCode;
         ResponseStatus = $"{response.StatusCode}";
@@ -165,7 +179,8 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
         return url;
     }
 
-    private void AddHeaders(IEnumerable<RequestHeader>? headers)
+    private void AddHeaders(
+        IEnumerable<RequestHeader>? headers)
     {
         if (headers is null)
         {
@@ -179,6 +194,23 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                 .Add(
                     h.Key,
                     h.Value);
+        }
+    }
+
+    private void RemoveHeaders(
+        IEnumerable<RequestHeader>? headers)
+    {
+        if (headers is null)
+        {
+            return;
+        }
+
+        foreach (var h in headers.Distinct())
+        {
+            _httpClient
+                .DefaultRequestHeaders
+                .Remove(
+                    h.Key);
         }
     }
 }
