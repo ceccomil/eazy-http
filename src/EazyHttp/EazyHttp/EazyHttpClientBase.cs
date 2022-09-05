@@ -21,6 +21,15 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
     public string ResponseStatus { get; private set; } = "Unknown";
 
     /// <summary>
+    /// Http request headers
+    /// </summary>
+    public HttpRequestHeaders Headers
+    {
+        get => _httpClient
+            .DefaultRequestHeaders;
+    }
+
+    /// <summary>
     /// TODO docume
     /// </summary>
     /// <param name="httpClient"></param>
@@ -258,7 +267,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
     /// <returns></returns>
     public async Task<TResult?> PostUrlEncodedFormAsync<TResult>(
         string route,
-        IEnumerable<KeyValuePair<string?, string?>> elements,
+        IEnumerable<KeyValuePair<string, string?>> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
         CancellationToken cancellationToken = default)
@@ -303,13 +312,22 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
 
         AddHeaders(additionalHeaders);
 
+        var content = await GetContentFromBody(
+                body,
+                cancellationToken);
+
         using var response = await sendAsync(
             url,
-            await GetContentFromBody(
-                body,
-                cancellationToken));
+            content);
 
         RemoveHeaders(additionalHeaders);
+
+        if (authHeader is not null)
+        {
+            _httpClient
+                .DefaultRequestHeaders
+                .Authorization = null;
+        }
 
         ResponseCode = (int)response.StatusCode;
         ResponseStatus = $"{response.StatusCode}";
@@ -381,6 +399,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
         }
 
         url += "/";
+        route = $"{route}";
 
         if (route.StartsWith(
             "http",

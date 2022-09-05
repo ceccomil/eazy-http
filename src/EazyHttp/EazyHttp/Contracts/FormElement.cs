@@ -18,11 +18,6 @@ public class FormElement
     /// <summary>
     /// TODO docume
     /// </summary>
-    public IEnumerable<byte>? Content { get; set; }
-
-    /// <summary>
-    /// TODO docume
-    /// </summary>
     public HttpContent HttpElementContent { get; }
 
     /// <summary>
@@ -41,5 +36,9 @@ public class FormElement
     {
         QueryParam = queryParam;
         HttpElementContent = elementContent;
+        if (HttpElementContent is StringContent)
+        {
+            SendAsString = true;
+        }
     }
 }
