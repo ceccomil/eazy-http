@@ -130,7 +130,7 @@ public interface IEazyHttpClient
     /// <returns></returns>
     Task<TResult?> PostUrlEncodedFormAsync<TResult>(
         string route,
-        IEnumerable<KeyValuePair<string?, string?>> elements,
+        IEnumerable<KeyValuePair<string, string?>> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
         CancellationToken cancellationToken = default) where TResult : class;
