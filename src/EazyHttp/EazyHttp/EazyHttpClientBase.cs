@@ -1,4 +1,8 @@
-﻿namespace EazyHttp;
+﻿using System.IO;
+using System.Threading;
+using System;
+
+namespace EazyHttp;
 
 /// <summary>
 /// TODO documentation
@@ -348,11 +352,49 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                 $" result: {_enc.GetString(buffer)}");
         }
 
-        return await JsonSerializer
-            .DeserializeAsync<TResult>(
-                stream,
-                _options.SerializerOptions,
-                cancellationToken);
+        return await DeserializeOrGetBytes<TResult>(
+            response.Content,
+            stream,
+            cancellationToken);        
+    }
+
+    private async Task<TResult?> DeserializeOrGetBytes<TResult>(
+        HttpContent content,
+        Stream stream,
+        CancellationToken cancellationToken)
+    {
+
+        if (!content.Headers.Contains("Content-Type") ||
+            content.Headers.GetValues("Content-Type")
+                .Any(x => x.Equals("application/json")))
+        {
+            return await JsonSerializer
+                .DeserializeAsync<TResult>(
+                    stream,
+                    _options.SerializerOptions,
+                    cancellationToken);
+        }
+
+        try
+        {
+            var buffer = new byte[stream.Length];
+            await stream
+                .ReadAsync(
+                    buffer,
+                    cancellationToken);
+
+            return (TResult?)Convert
+                .ChangeType(
+                    buffer,
+                    typeof(TResult?));
+        }
+        catch (Exception ex)
+        {
+            throw new ByteArrayExpectedException(
+                "Response content type is not a valid " +
+                "JSON. A byte array TResult was expected!",
+                ex);
+        }
     }
 
     private async Task<HttpContent?> GetContentFromBody(

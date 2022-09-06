@@ -247,7 +247,7 @@ public static class RegisterHttpClients
 
         code += @"
         services
-            .AddSingleton<IEazyClients, EazyClients>();
+            .AddTransient<IEazyClients, EazyClients>();
 
         return services;
     }

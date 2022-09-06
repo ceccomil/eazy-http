@@ -39,6 +39,11 @@ public class EazyHttpClientTests
                 @"{""result"": ""OK""}")
         };
 
+        response
+            .Content
+            .Headers
+            .ContentType = new("application/json");
+
         _handlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
