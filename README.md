@@ -33,5 +33,6 @@ builder
 var app = builder.Build();
 ```
 See example: Doggo
+- Without a custom configuration a single client will be created, with web defaults serializer and no custom headers attached to requests
 
 
