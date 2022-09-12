@@ -8,6 +8,7 @@ global using System.Net.Http.Headers;
 global using System.Text;
 global using System.Text.Json;
 global using System.Web;
+global using EazyHttp.Helpers;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("EazyHttp.Tests")]

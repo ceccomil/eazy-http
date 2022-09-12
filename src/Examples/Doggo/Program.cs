@@ -20,5 +20,3 @@ var dogService = scope
 
 await dogService
     .GetPicture();
-
-Console.WriteLine("Hello, World!");

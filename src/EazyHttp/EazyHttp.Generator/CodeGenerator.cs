@@ -96,8 +96,8 @@ public static class Logs
         SyntaxReceiver sr)
     {
         sr
-                .GeneratorLogger
-                .Add($"Http clients to be created: {sr.Clients.Count}");
+            .GeneratorLogger
+            .Add($"Http clients to be created: {sr.Clients.Count}");
 
         foreach (var client in sr.Clients)
         {

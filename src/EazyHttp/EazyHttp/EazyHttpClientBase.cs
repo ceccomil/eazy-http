@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Threading;
-using System;
-
-namespace EazyHttp;
+﻿namespace EazyHttp;
 
 /// <summary>
 /// TODO documentation
@@ -10,9 +6,10 @@ namespace EazyHttp;
 public abstract class EazyHttpClientBase : IEazyHttpClient
 {
     private readonly HttpClient _httpClient;
-    private readonly EazyClientOptions _options;
 
     private readonly Encoding _enc = Encoding.UTF8;
+
+    private readonly JsonSerializerOptions _serializer;
 
     /// <summary>
     /// Gets the status code of the last HTTP request 
@@ -43,18 +40,30 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
         IOptions<EazyClientOptions> options)
     {
         _httpClient = httpClient;
-        _options = options.Value;
 
         var name = GetType()
             .Name;
 
-        if (_options
+        _serializer = new(
+            JsonSerializerDefaults
+            .Web);
+
+        if (options.Value
             .PersistentHeaders
             .ContainsKey(name))
         {
             AddHeaders(
-                _options
+                options.Value
                 .PersistentHeaders[name]);
+        }
+
+        if (options.Value
+            .SerializersOptions
+            .ContainsKey(name))
+        {
+            _serializer = options
+                .Value
+                .SerializersOptions[name];
         }
     }
 
@@ -316,8 +325,10 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
 
         AddHeaders(additionalHeaders);
 
-        var content = await GetContentFromBody(
+        var content = await _serializer
+            .GetContentFromBody(
                 body,
+                _enc,
                 cancellationToken);
 
         using var response = await sendAsync(
@@ -366,12 +377,12 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
 
         if (!content.Headers.Contains("Content-Type") ||
             content.Headers.GetValues("Content-Type")
-                .Any(x => x.Equals("application/json")))
+                .Any(x => x.Contains("application/json")))
         {
             return await JsonSerializer
                 .DeserializeAsync<TResult>(
                     stream,
-                    _options.SerializerOptions,
+                    _serializer,
                     cancellationToken);
         }
 
@@ -395,35 +406,6 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                 "JSON. A byte array TResult was expected!",
                 ex);
         }
-    }
-
-    private async Task<HttpContent?> GetContentFromBody(
-        object? body,
-        CancellationToken cancellationToken = default)
-    {
-        if (body is null)
-        {
-            return default;
-        }
-
-        using var stream = new MemoryStream();
-        await JsonSerializer
-            .SerializeAsync(
-                stream,
-                body,
-                body.GetType(),
-                _options.SerializerOptions,
-                cancellationToken);
-
-        stream.Seek(
-            0,
-            SeekOrigin.Begin);
-
-        return new StringContent(
-            _enc.GetString(
-                stream.GetBuffer()),
-            _enc,
-            "application/json");
     }
 
     private string CombineUrl(
