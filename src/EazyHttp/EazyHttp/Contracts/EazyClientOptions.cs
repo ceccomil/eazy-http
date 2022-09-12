@@ -8,16 +8,15 @@ public class EazyClientOptions
     /// <summary>
     /// TODO Documentation
     /// </summary>
-    public JsonSerializerOptions SerializerOptions { get; set; } = new(
-            JsonSerializerDefaults.Web);
-
-    /// <summary>
-    /// TODO Documentation
-    /// </summary>
     public HttpClientsCollection EazyHttpClients { get; set; } = new();
 
     /// <summary>
     /// TODO documentation
     /// </summary>
     public Dictionary<string, IEnumerable<RequestHeader>> PersistentHeaders { get; } = new();
+
+    /// <summary>
+    /// TODO documentation
+    /// </summary>
+    public Dictionary<string, JsonSerializerOptions> SerializersOptions { get; } = new();
 }
