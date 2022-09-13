@@ -358,7 +358,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
             stream.Read(buffer, 0, buffer.Length);
 
             throw new FailedRequestException(
-                $"Request didn't succed ({url}" +
+                $"Request did not succeed ({url}" +
                 $") [{ResponseCode}] {ResponseStatus}," +
                 $" result: {_enc.GetString(buffer)}");
         }
