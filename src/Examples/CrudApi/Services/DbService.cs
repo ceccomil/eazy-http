@@ -79,7 +79,7 @@ public class DbService : IDbService
 
     public Task<Order> Update(Guid id, Order order) => Task.Run(() =>
     {
-        if (Orders.FindById(id) is not Order order)
+        if (Orders.FindById(id) is not Order)
         {
             throw new ApplicationException(
                 $"Order Id: {id}, has not been found!");

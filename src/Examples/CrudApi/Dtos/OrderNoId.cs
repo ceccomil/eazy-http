@@ -1,8 +1,7 @@
 ﻿namespace CrudApi.Dtos;
 
-public record OrderAdd
+public record OrderNoId : OrderAmount
 {
     public string CustomerName { get; set; } = null!;
-    public decimal Amount { get; set; }
     public string Description { get; set; } = null!;
 }
