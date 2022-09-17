@@ -358,7 +358,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
             stream.Read(buffer, 0, buffer.Length);
 
             throw new FailedRequestException(
-                $"Request didn't succed ({url}" +
+                $"Request did not succeed ({url}" +
                 $") [{ResponseCode}] {ResponseStatus}," +
                 $" result: {_enc.GetString(buffer)}");
         }
@@ -375,7 +375,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
         CancellationToken cancellationToken)
     {
 
-        if (!content.Headers.Contains("Content-Type") ||
+        if (content.Headers.Contains("Content-Type") &&
             content.Headers.GetValues("Content-Type")
                 .Any(x => x.Contains("application/json")))
         {
@@ -393,6 +393,14 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                 .ReadAsync(
                     buffer,
                     cancellationToken);
+
+            if (typeof(TResult) == typeof(string))
+            {
+                return (TResult?)Convert
+                .ChangeType(
+                    _enc.GetString(buffer),
+                    typeof(TResult?));
+            }
 
             return (TResult?)Convert
                 .ChangeType(

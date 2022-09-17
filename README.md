@@ -35,4 +35,45 @@ var app = builder.Build();
 See example: Doggo
 - Without a custom configuration a single client will be created, with web defaults serializer and no custom headers attached to requests
 
+Clients configuration
+=====================================
+-------------------------------------
+
+```csharp
+...
+services
+    .ConfigureEazyHttpClients(
+        opts =>
+        {
+            opts
+                .EazyHttpClients
+                .Add(new(
+                    "MyClientName",
+                    "https://baseAddress/"));
+
+            opts
+                .PersistentHeaders
+                .Add(
+                    "MyClientName",
+                    new RequestHeader[]
+                    {
+                        new(
+                            "HeaderKey",
+                            "HeaderValue"),
+                        new(
+                            "SecondHeaderKey",
+                            "SecondHeaderValue")
+                    });
+
+            opts
+                .SerializersOptions
+                .Add(
+                    "MyClientName",
+                    new JsonSerializerOptions());
+        })
+    .AddEazyHttpClients();
+```
+See example: CrudApi + CrudApi.Client
+- With a custom configuration clients can be added, and for each it's possible to specify a custom JsonSerializerOptions as well as a collection of request headers
+
 

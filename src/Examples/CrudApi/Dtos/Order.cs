@@ -1,6 +1,6 @@
 ﻿namespace CrudApi.Dtos;
 
-public record Order : OrderAdd
+public record Order : OrderNoId
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 }

@@ -121,6 +121,128 @@ if (key.Key == ConsoleKey.A)
 
 Console
     .WriteLine(
+        "Press U to update an order or, any other key to skip.");
+
+key = Console
+    .ReadKey(intercept: true);
+
+if (key.Key == ConsoleKey.U)
+{
+    var order = new Order();
+
+    Console
+        .WriteLine(
+            "Please, type (or paste) the id of the order: ");
+
+    var id = Console
+        .ReadLine();
+
+    Console
+        .WriteLine(
+            "Please, type the new name of the customer: ");
+
+    order.CustomerName = Console
+        .ReadLine();
+
+    Console
+        .WriteLine(
+            "Please, type the new description of the order: ");
+
+    order.Description = Console
+        .ReadLine();
+
+    Console
+        .WriteLine(
+            "Please, type the new amount of the order: ");
+
+    order.Amount = Convert
+        .ToDecimal(
+            Console
+            .ReadLine());
+
+    Console
+        .WriteLine(
+            $"Order updated{Environment.NewLine}" +
+            await clients
+            .CrudApiClient
+            .PutAsync<Order>(
+                $"Orders/{id}",
+                order));
+
+    Console
+        .WriteLine();
+}
+
+Console
+    .WriteLine(
+        "Press D to delete an order or, any other key to skip.");
+
+key = Console
+    .ReadKey(intercept: true);
+
+if (key.Key == ConsoleKey.D)
+{
+    Console
+        .WriteLine(
+            "Please, type (or paste) the id of the order: ");
+
+    var id = Console
+        .ReadLine();
+
+    Console
+        .WriteLine(
+            await clients
+            .CrudApiClient
+            .DeleteAsync<string>(
+                $"Orders/{id}"));
+
+    Console
+        .WriteLine();
+}
+
+Console
+    .WriteLine(
+        "Press P to change an order amount or, any other key to skip.");
+
+key = Console
+    .ReadKey(intercept: true);
+
+if (key.Key == ConsoleKey.P)
+{
+    Console
+        .WriteLine(
+            "Please, type (or paste) the id of the order: ");
+
+    var id = Console
+        .ReadLine();
+
+    Console
+        .WriteLine(
+            "Please, type the new amount of the order: ");
+
+    var amount = Convert
+        .ToDecimal(
+            Console
+            .ReadLine());
+
+    Console
+        .WriteLine(
+            $"Order amount changed {Environment.NewLine}" +
+            await clients
+            .CrudApiClient
+            .PatchAsync<Order>(
+                $"Orders/{id}",
+                new Order()
+                {
+                    Amount = amount
+                }));
+
+    Console
+        .WriteLine();
+}
+
+Console
+    .WriteLine(
         "Press a key to quit!");
 
 _ = Console
