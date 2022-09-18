@@ -12,7 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EazyHttp" Version="0.1.39-alpha" PrivateAssets="All" />
+    <PackageReference Include="EazyHttp" Version="0.1.41-alpha" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

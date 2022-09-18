@@ -18,7 +18,7 @@ public interface IRandomDog
     Task<byte[]> GetPicture(
         CancellationToken token = default);
 
-    Task<string> SavePicture(
+    Task<(byte[], string)> GetAndSavePicture(
         CancellationToken token = default);
 }
 
@@ -65,7 +65,7 @@ public class RandomDog : IRandomDog
         return imageData;
     }
 
-    public async Task<string> SavePicture(
+    public async Task<(byte[], string)> GetAndSavePicture(
         CancellationToken token = default)
     {
         var imageData = await GetPicture(token);
@@ -78,6 +78,8 @@ public class RandomDog : IRandomDog
                 imageData,
                 token);
 
-        return fileName;
+        return 
+            (imageData,
+            fileName);
     }
 }

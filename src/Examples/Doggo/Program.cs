@@ -19,8 +19,8 @@ var dogService = scope
     .ServiceProvider
     .GetRequiredService<IRandomDog>();
 
-var fileName = await dogService
-    .SavePicture();
+var (_, fileName) = await dogService
+    .GetAndSavePicture();
 
 Console
     .WriteLine(
