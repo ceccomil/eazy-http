@@ -5,11 +5,37 @@ public class SyntaxReceiver : ISyntaxContextReceiver
     private const string EXT_METHOD = "ConfigureEazyHttpClients";
     private const string CLIENTS_DEF = ".EazyHttpClients";
     private const string CLIENTS_PROP = "EazyHttpClients";
+    private const string NAMESPACE_PREFIX_DEF = ".NameSpacePrefix";
+    private const string NAMESPACE_PREFIX_PROP = "NameSpacePrefix";
 
     public List<string> GeneratorLogger { get; } = new();
     public List<dynamic> Clients { get; private set; } = new();
 
     public bool ConfigFound { get; private set; }
+
+    private string _nameSpacePrefix = string.Empty;
+    
+    public string NameSpacePrefix
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(_nameSpacePrefix))
+            {
+                return string.Empty;
+            }
+
+            while (_nameSpacePrefix.EndsWith("."))
+            {
+                _nameSpacePrefix = _nameSpacePrefix
+                    .Remove(
+                        _nameSpacePrefix
+                        .Length - 1,
+                        1);
+            }
+
+            return $"{_nameSpacePrefix}.";
+        }
+    }
 
     public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
     {
@@ -19,46 +45,157 @@ public class SyntaxReceiver : ISyntaxContextReceiver
             code.Contains(EXT_METHOD))
         {
             GeneratorLogger.Add(
-                $"Search for `{EXT_METHOD}`: " +
-                $"is successful!{Environment.NewLine}{Environment.NewLine}");
+            $"Search for `{EXT_METHOD}`: " +
+            $"is successful!{Environment.NewLine}{Environment.NewLine}");
 
             GeneratorLogger.Add(
                 $"Found: {code}{Environment.NewLine}");
 
             ConfigFound = true;
 
-            var lambda = ies
+            GetClientsSetup(
+                ies);
+
+            SetNameSpacePrefix(
+                ies);
+        }
+    }
+
+    private void SetNameSpacePrefix(
+        InvocationExpressionSyntax ies)
+    {
+        var lambda = ies
                 .DescendantNodes()
                 .OfType<LambdaExpressionSyntax>()
-                .FirstOrDefault(x => $"{x}".Contains(CLIENTS_DEF));
+                .LastOrDefault(x => $"{x}".Contains(NAMESPACE_PREFIX_DEF));
 
-            if (lambda is null)
+        if (lambda is null)
+        {
+            return;
+        }
+
+        GeneratorLogger.Add(
+            $"Search for `{NAMESPACE_PREFIX_DEF}`: " +
+            $"is successful!{Environment.NewLine}{Environment.NewLine}");
+
+        if (lambda.Body is not BlockSyntax body)
+        {
+            throw new NotSupportedException(
+                $"Lambda body: {lambda}, is not of " +
+                $"type {nameof(BlockSyntax)}");
+        }
+
+        SetNameSpacePrefixFromLambda(
+            body);
+    }
+
+    private void SetNameSpacePrefixFromLambda(
+        BlockSyntax body)
+    {
+        GeneratorLogger.Add(
+                    $"Lambda Body: {body}");
+
+        var nodes = body
+            .DescendantNodes()
+            .OfType<ExpressionStatementSyntax>()
+            .Where(x => $"{x}".Contains(NAMESPACE_PREFIX_DEF));
+
+        var statements = new List<string>();
+
+        foreach (var n in nodes)
+        {
+            GeneratorLogger.Add(
+                $"Nodes {n.GetType().Name}: {n}");
+
+            var statement = $"{n}";
+
+            var idx = statement
+                .IndexOf(NAMESPACE_PREFIX_PROP);
+
+            statements
+                .Add(
+                    statement
+                    .Substring(idx));
+        }
+
+        var code = @$"
+var {string.Join(Environment.NewLine, statements)}
+
+return {NAMESPACE_PREFIX_PROP};";
+
+        var exprEval = new ExpressionEvaluator();
+        var input = exprEval
+            .InitInput(new()
             {
-                Clients
-                    .Add(new {
-                        Name = "SharedHttpClient",
-                        BaseAddress = ""
-                    });
+                Code = code
+            });
 
-                GeneratorLogger.Add(
-                        $"Adding default client: only {Clients.Count} client!");
+        try
+        {
+            var result = exprEval
+                .GetEvaluated<string>(input)
+                .Result;
 
-                return;
-            }
+            _nameSpacePrefix = $"{result}";
+        }
+        catch (Exception ex)
+        {
+            GeneratorLogger.Add(
+                     $"ERROR: {ex}");
 
             GeneratorLogger.Add(
-                $"Found client config: {lambda}{Environment.NewLine}");
-
-            if (lambda.Body is not BlockSyntax body)
-            {
-                throw new NotSupportedException(
-                    $"Lambda body: {lambda}, is not of " +
-                    $"type {nameof(BlockSyntax)}");
-            }
-
-            GetClientsSetupFromLambda(
-                body);
+                     $"Source code:{Environment.NewLine}" +
+                     $"{code}{Environment.NewLine}{Environment.NewLine}");
         }
+
+        if (exprEval.EvalException is not null)
+        {
+            GeneratorLogger.Add(
+                         $"ExpressionEx: {exprEval.EvalException}");
+
+            GeneratorLogger.Add(
+                     $"Source code:{Environment.NewLine}" +
+                     $"{code}{Environment.NewLine}{Environment.NewLine}");
+        }
+
+        GeneratorLogger.Add(
+                $"NameSpacePrefix: {NameSpacePrefix}");
+    }
+
+    private void GetClientsSetup(
+        InvocationExpressionSyntax ies)
+    {
+        var lambda = ies
+                .DescendantNodes()
+                .OfType<LambdaExpressionSyntax>()
+                .LastOrDefault(x => $"{x}".Contains(CLIENTS_DEF));
+
+        if (lambda is null)
+        {
+            Clients
+                .Add(new {
+                    Name = "SharedHttpClient",
+                    BaseAddress = ""
+                });
+
+            GeneratorLogger.Add(
+                    $"Adding default client: only {Clients.Count} client!");
+
+            return;
+        }
+
+        GeneratorLogger.Add(
+            $"Found client config: {lambda}{Environment.NewLine}");
+
+        if (lambda.Body is not BlockSyntax body)
+        {
+            throw new NotSupportedException(
+                $"Lambda body: {lambda}, is not of " +
+                $"type {nameof(BlockSyntax)}");
+        }
+
+        GetClientsSetupFromLambda(
+            body);
     }
 
     private void GetClientsSetupFromLambda(
@@ -70,7 +207,7 @@ public class SyntaxReceiver : ISyntaxContextReceiver
         var nodes = body
             .DescendantNodes()
             .OfType<ExpressionStatementSyntax>()
-            .Where(x => $"{x}".Contains($".{CLIENTS_PROP}"));
+            .Where(x => $"{x}".Contains(CLIENTS_DEF));
 
         var statements = new List<string>();
 
@@ -140,7 +277,14 @@ return {CLIENTS_PROP};";
                      $"ERROR: {ex}");
         }
 
-        GeneratorLogger.Add(
-                     $"ExpressionEx: {exprEval.EvalException}");
+        if (exprEval.EvalException is not null)
+        {
+            GeneratorLogger.Add(
+                         $"ExpressionEx: {exprEval.EvalException}");
+
+            GeneratorLogger.Add(
+                     $"Source code:{Environment.NewLine}" +
+                     $"{code}{Environment.NewLine}{Environment.NewLine}");
+        }
     }
 }

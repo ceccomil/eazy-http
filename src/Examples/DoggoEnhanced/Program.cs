@@ -1,11 +1,23 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using EazyHttp;
-using Doggo;
-using System.Diagnostics;
-using System;
+﻿global using Doggo;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Diagnostics;
+global using EazyHttp;
 
 var services = new ServiceCollection()
-    .ConfigureEazyHttpClients()
+    .ConfigureEazyHttpClients(opts =>
+    {
+        opts
+            .NameSpacePrefix = "DoggoEnhanced";
+
+        opts
+            .EazyHttpClients
+            .Add(new("DoggoClient", ""));
+
+        opts
+            .EazyHttpClients
+            .Add(new("MsClient", ""));
+
+    })
     .AddEazyHttpClients()
     .AddTransient<IRandomDog, RandomDog>();
 

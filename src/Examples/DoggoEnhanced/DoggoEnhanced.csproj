@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,7 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EazyHttp" Version="0.1.39-alpha" />
+    <ProjectReference Include="..\Doggo\Doggo.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EazyHttp" Version="0.1.39-alpha" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

@@ -5,12 +5,14 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Doggo", "Doggo\Doggo.csproj", "{4A66C950-FE2D-4B17-BE49-B124A2B3FB1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudApi", "CrudApi\CrudApi.csproj", "{3CD04F3D-EDDF-4E45-8AB3-D850C625786A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudApi", "CrudApi\CrudApi.csproj", "{3CD04F3D-EDDF-4E45-8AB3-D850C625786A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudApi.Client", "CrudApi.Client\CrudApi.Client.csproj", "{81B56267-2F18-49DD-ACAB-CF82F5DC9F66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudApi.Client", "CrudApi.Client\CrudApi.Client.csproj", "{81B56267-2F18-49DD-ACAB-CF82F5DC9F66}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3CD04F3D-EDDF-4E45-8AB3-D850C625786A} = {3CD04F3D-EDDF-4E45-8AB3-D850C625786A}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoggoEnhanced", "DoggoEnhanced\DoggoEnhanced.csproj", "{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +32,10 @@ Global
 		{81B56267-2F18-49DD-ACAB-CF82F5DC9F66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81B56267-2F18-49DD-ACAB-CF82F5DC9F66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81B56267-2F18-49DD-ACAB-CF82F5DC9F66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
