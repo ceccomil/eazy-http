@@ -7,7 +7,7 @@
     <PackageId>EazyHttp.Generator</PackageId>
     <PackageTags>eazy;http;client;rest;get;post;send;put;multipart;form</PackageTags>
     <IsPackable>True</IsPackable>
-    <PackageProjectUrl>https://github.com/ceccomil/captain-logger</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/ceccomil/eazy-http</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
