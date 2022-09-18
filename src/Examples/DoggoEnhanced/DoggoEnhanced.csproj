@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EazyHttp" Version="0.1.41-alpha" PrivateAssets="All" />
+    <PackageReference Include="EazyHttp" Version="0.2.0-beta" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
