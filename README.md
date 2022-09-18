@@ -102,9 +102,8 @@ services
 ```
 See example: DoggoEnhanced
 - The project is referencing the Doggo example and using the RandomDog service in addition to its own service to consume Microsoft Computer Vision.
-In order to run the example a free Computer Vision service must be created and in Program.cs the URL and the subscription key must be changed.
-see:
-https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/
-https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/quickstarts-sdk/image-analysis-client-library?tabs=visual-studio&pivots=programming-language-csharp#prerequisites
+- In order to run the example a free Computer Vision service must be created and in Program.cs the URL and the subscription key must be changed.
+[Computer Vision](https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/), [Prerequisites](https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/quickstarts-sdk/image-analysis-client-library?tabs=visual-studio&pivots=programming-language-csharp#prerequisites)
+
 
 
