@@ -15,7 +15,10 @@ public interface IRandomDog
 {
     IEazyClients Clients { get; }
 
-    Task GetPicture(
+    Task<byte[]> GetPicture(
+        CancellationToken token = default);
+
+    Task<(byte[], string)> GetAndSavePicture(
         CancellationToken token = default);
 }
 
@@ -31,7 +34,7 @@ public class RandomDog : IRandomDog
         Clients = clients;
     }
 
-    public async Task GetPicture(
+    public async Task<byte[]> GetPicture(
         CancellationToken token = default)
     {
         var dogDetail = await Clients
@@ -43,32 +46,40 @@ public class RandomDog : IRandomDog
         if (dogDetail?.Status != "success" ||
             dogDetail.ImgUrl is null)
         {
-            Console.WriteLine("Dog picture not found!");
-            return;
+            throw new ApplicationException(
+                $"[{dogDetail?.Status}] Dog picture not found!");
         }
 
         var imageData = await Clients
             .SharedHttpClient
             .GetAsync<byte[]>(
-                dogDetail.ImgUrl);
+                dogDetail.ImgUrl,
+                cancellationToken: token);
 
         if (imageData is null)
         {
-            Console.WriteLine("Dog picture not found!");
-            return;
+            throw new ApplicationException(
+                $"Dog picture data is null!");
         }
 
+        return imageData;
+    }
+
+    public async Task<(byte[], string)> GetAndSavePicture(
+        CancellationToken token = default)
+    {
+        var imageData = await GetPicture(token);
+
         var fileName = $"./{Guid.NewGuid()}.png";
+
         await File
             .WriteAllBytesAsync(
                 fileName,
                 imageData,
                 token);
 
-        Console
-            .WriteLine(
-            $"Here is your picture: {fileName}");
-
-        Process.Start($"powershell.exe", fileName);
+        return 
+            (imageData,
+            fileName);
     }
 }

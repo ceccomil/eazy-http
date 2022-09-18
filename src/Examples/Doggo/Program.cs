@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using EazyHttp;
-using System;
 using Doggo;
+using System.Diagnostics;
+using System;
 
 var services = new ServiceCollection()
     .ConfigureEazyHttpClients()
@@ -18,5 +19,11 @@ var dogService = scope
     .ServiceProvider
     .GetRequiredService<IRandomDog>();
 
-await dogService
-    .GetPicture();
+var (_, fileName) = await dogService
+    .GetAndSavePicture();
+
+Console
+    .WriteLine(
+    $"Here is your picture: {fileName}");
+
+Process.Start($"powershell.exe", fileName);

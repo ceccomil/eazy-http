@@ -19,4 +19,9 @@ public class EazyClientOptions
     /// TODO documentation
     /// </summary>
     public Dictionary<string, JsonSerializerOptions> SerializersOptions { get; } = new();
+
+    /// <summary>
+    /// TODO documentation
+    /// </summary>
+    public string NameSpacePrefix { get; set; } = string.Empty;
 }
