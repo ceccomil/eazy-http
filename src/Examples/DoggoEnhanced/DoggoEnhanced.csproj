@@ -8,15 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Doggo\Doggo.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EazyHttp" Version="0.2.0-beta" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

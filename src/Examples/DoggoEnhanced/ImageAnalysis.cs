@@ -9,6 +9,14 @@ public interface IImageAnalysis
     Task<AnalysisResult> GetAnalysis(
         byte[] imageData,
         CancellationToken token = default);
+
+    Task<byte[]> GetAiPicture(
+        string text,
+        CancellationToken cancellationToken = default);
+
+    Task<(byte[], string)> GetAndSaveAiPicture(
+        string text,
+        CancellationToken token = default);
 }
 
 public class ImageAnalysis : IImageAnalysis
@@ -59,5 +67,63 @@ public class ImageAnalysis : IImageAnalysis
         return result
             ?? throw new ApplicationException(
                 "Resulting content is null!");
+    }
+
+    public async Task<byte[]> GetAiPicture(
+        string text,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            throw new ApplicationException(
+                "A valid description is required!");
+        }
+
+        var elements = new FormElement[]
+        {
+            new(
+                "text",
+                new StringContent(text))
+        };
+
+        var json = await Clients
+            .DeepAi
+            .PostFormAsync<AiImage>(
+            "text2img",
+            elements,
+            cancellationToken: cancellationToken)
+            ?? throw new ApplicationException(
+                "Resulting content is null!");
+
+        var result = await Clients
+            .DeepAi
+            .GetAsync<byte[]>(
+                json.OutputUrl,
+                cancellationToken: cancellationToken);
+
+        return result
+            ?? throw new ApplicationException(
+                "Resulting content is null!");
+    }
+
+    public async Task<(byte[], string)> GetAndSaveAiPicture(
+        string text,
+        CancellationToken token = default)
+    {
+        var imageData = await GetAiPicture(
+            text,
+            token);
+
+        var fileName = $"./{Guid.NewGuid()}.png";
+
+        await File
+            .WriteAllBytesAsync(
+                fileName,
+                imageData,
+                token);
+
+        return
+            (imageData,
+            fileName);
     }
 }

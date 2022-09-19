@@ -101,9 +101,10 @@ services
     .CustomNameSpaceAddEazyHttpClients()
 ```
 See example: DoggoEnhanced
-- The project is referencing the Doggo example and using the RandomDog service in addition to its own service to consume Microsoft Computer Vision.
-- In order to run the example a free Computer Vision service must be created and in Program.cs the URL and the subscription key must be changed.
-[Computer Vision](https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/), [Prerequisites](https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/quickstarts-sdk/image-analysis-client-library?tabs=visual-studio&pivots=programming-language-csharp#prerequisites)
+- The project is referencing the Doggo example and using the RandomDog service in addition to its own service to consume [Microsoft Computer Vision](https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/) and [DeepAi](https://deepai.org/machine-learning-model/text2img).
+- In order to run the example a free Computer Vision service must be created and in Program.cs the URL and the subscription key must be changed, the quickstart api-key is provided for consuming DeepAi.
+[Computer Vision Prerequisites](https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/quickstarts-sdk/image-analysis-client-library?tabs=visual-studio&pivots=programming-language-csharp#prerequisites)
+- Please note that a custom serializer is in use for this example
 
 
 
