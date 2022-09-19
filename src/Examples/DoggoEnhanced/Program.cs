@@ -7,6 +7,9 @@ global using EazyHttp;
 global using DoggoEnhanced.EazyHttp;
 global using System.Text.Json.Serialization;
 global using DoggoEnhanced.Models;
+global using System.Text.Json;
+global using System.Text;
+using DoggoEnhanced.Helpers;
 
 //This example required a valid Computer Vision endpoint
 //https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/
@@ -25,6 +28,21 @@ var services = new ServiceCollection()
                 "https://<computer vision service name>.cognitiveservices.azure.com/vision/v3.2/"));
 
         opts
+            .EazyHttpClients
+            .Add(new(
+                "DeepAi",
+                "https://api.deepai.org/api"));
+
+        opts
+            .SerializersOptions
+            .Add(
+            "DeepAi",
+            new(JsonSerializerDefaults.Web)
+            {
+                PropertyNamingPolicy = new SnakeCasePolicy()
+            });
+
+        opts
             .PersistentHeaders
             .Add(
                 "ComputerVision",
@@ -33,6 +51,17 @@ var services = new ServiceCollection()
                     new(
                         "Ocp-Apim-Subscription-Key",
                         "<computer vision subscription key>")
+                });
+
+        opts
+            .PersistentHeaders
+            .Add(
+                "DeepAi",
+                new RequestHeader[]
+                {
+                    new(
+                        "api-key",
+                        "quickstart-QUdJIGlzIGNvbWluZy4uLi4K")
                 });
 
     })
@@ -72,7 +101,7 @@ var result = await analysisService
 
 Console
     .WriteLine(
-        $"Analysis {result.Id} completed!");
+        $"Analysis {result.Id} completed:");
 
 foreach (var caption in result.Description.Captions)
 {
@@ -91,3 +120,32 @@ Console
             .Tags
             .Select(x => $"#{x}")));
 
+
+var text = result
+    .Description
+    .Captions
+    .OrderByDescending(x => x.Confidence)
+    .FirstOrDefault()
+    ?.Text;
+
+if (text is null)
+{
+    return;
+}
+
+Console
+    .WriteLine(
+        "Please wait, we are getting a new AI generated image...");
+
+var (_, newImageFileName) = await analysisService
+    .GetAndSaveAiPicture(
+        text);
+
+Console
+    .WriteLine(
+        $"Here is your picture: {newImageFileName}");
+
+Process
+    .Start(
+        $"powershell.exe",
+        newImageFileName);
