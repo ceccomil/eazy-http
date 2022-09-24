@@ -1,4 +1,6 @@
-﻿namespace EazyHttp.Tests;
+﻿using EazyHttp.Contracts.Exceptions;
+
+namespace EazyHttp.Tests;
 
 [Collection("EazyHttpClient Tests")]
 public class EazyHttpClientTests
@@ -65,6 +67,57 @@ public class EazyHttpClientTests
 
         _body
             .Add("Key2", "Val2");
+
+        _httpClient = new TestHttpClient(
+            new(
+                _handlerMock.Object),
+                _optionsMock.Object);
+    }
+
+    private void DefaultFailureSetup(
+        int attempts = 3)
+    {
+        var opts = new EazyClientOptions();
+        opts.Retries.Add(
+            "TestHttpClient",
+            new()
+            {
+                MaxAttempts = attempts,
+                StatusCodeMatchingCondition = (status, method) =>
+                {
+                    if (method == HttpMethod.Get &&
+                        status == HttpStatusCode.ServiceUnavailable)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+            });
+
+        _optionsMock
+            .Setup(x => x.Value)
+            .Returns(opts);
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.ServiceUnavailable,
+            Content = new StringContent(
+                @"{""result"": ""KO""}")
+        };
+
+        response
+            .Content
+            .Headers
+            .ContentType = new("application/json");
+
+        _handlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(response);
 
         _httpClient = new TestHttpClient(
             new(
@@ -243,5 +296,58 @@ public class EazyHttpClientTests
             .Result
             .Should()
             .Be("OK");
+    }
+
+    [Fact]
+    public async Task When_retries_are_made()
+    {
+        // Arrange
+        DefaultFailureSetup(2);
+
+        // Act
+        var exception = await Assert
+            .ThrowsAsync<AggregateException>(
+                () => _httpClient
+                    .GetAsync<TestResponse>(
+                        "/test",
+                        cancellationToken: _token));
+
+        // Assert
+        exception
+            .InnerExceptions
+            .All(x => x is FailedRequestException)
+            .Should()
+            .BeTrue();
+    }
+
+    [Fact]
+    public async Task When_retries_are_cancelled()
+    {
+        // Arrange
+        DefaultFailureSetup(10);
+
+        var cancellation = new CancellationTokenSource();
+
+        _ = Task
+            .Run(async () =>
+            {
+                await Task.Delay(10_000);
+                cancellation.Cancel();
+            });
+
+        // Act
+
+        var exception = await Assert
+            .ThrowsAsync<TaskCanceledException>(
+                () => _httpClient
+                    .GetAsync<TestResponse>(
+                        "/test",
+                        cancellationToken:
+                            cancellation.Token));
+
+        // Assert
+        exception
+            .Should()
+            .NotBeNull();
     }
 }

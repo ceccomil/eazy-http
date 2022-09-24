@@ -5,6 +5,8 @@ using CrudApi.Client;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+// This example requires the WEB API (CrudAPI) to be started
+
 Console
     .WriteLine(
         "Press a key when the WEB API " +

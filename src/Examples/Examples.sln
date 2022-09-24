@@ -12,7 +12,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudApi.Client", "CrudApi.C
 		{3CD04F3D-EDDF-4E45-8AB3-D850C625786A} = {3CD04F3D-EDDF-4E45-8AB3-D850C625786A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoggoEnhanced", "DoggoEnhanced\DoggoEnhanced.csproj", "{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoggoEnhanced", "DoggoEnhanced\DoggoEnhanced.csproj", "{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudApi.Client.Retries", "CrudApi.Client.Retries\CrudApi.Client.Retries.csproj", "{850711A5-7368-4111-A2A4-FFCF6575F5BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73798B3B-9B17-4C20-BF8F-E860DE5A28B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{850711A5-7368-4111-A2A4-FFCF6575F5BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{850711A5-7368-4111-A2A4-FFCF6575F5BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{850711A5-7368-4111-A2A4-FFCF6575F5BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{850711A5-7368-4111-A2A4-FFCF6575F5BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

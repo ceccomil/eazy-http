@@ -9,6 +9,7 @@ global using System.Text;
 global using System.Text.Json;
 global using System.Web;
 global using EazyHttp.Helpers;
+global using System.Net;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("EazyHttp.Tests")]

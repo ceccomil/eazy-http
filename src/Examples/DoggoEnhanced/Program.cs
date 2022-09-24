@@ -9,66 +9,14 @@ global using System.Text.Json.Serialization;
 global using DoggoEnhanced.Models;
 global using System.Text.Json;
 global using System.Text;
-using DoggoEnhanced.Helpers;
+global using DoggoEnhanced.Helpers;
 
-//This example required a valid Computer Vision endpoint
-//https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/
+// This example required a valid Computer Vision endpoint
+// https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/
 // A free version can be created from the azure portal
 
 var services = new ServiceCollection()
-    .ConfigureEazyHttpClients(opts =>
-    {
-        opts
-            .NameSpacePrefix = "DoggoEnhanced";
-
-        opts
-            .EazyHttpClients
-            .Add(new(
-                "ComputerVision",
-                "https://<computer vision service name>.cognitiveservices.azure.com/vision/v3.2/"));
-
-        opts
-            .EazyHttpClients
-            .Add(new(
-                "DeepAi",
-                "https://api.deepai.org/api"));
-
-        opts
-            .SerializersOptions
-            .Add(
-            "DeepAi",
-            new(JsonSerializerDefaults.Web)
-            {
-                PropertyNamingPolicy = new SnakeCasePolicy()
-            });
-
-        opts
-            .PersistentHeaders
-            .Add(
-                "ComputerVision",
-                new RequestHeader[]
-                {
-                    new(
-                        "Ocp-Apim-Subscription-Key",
-                        "<computer vision subscription key>")
-                });
-
-        opts
-            .PersistentHeaders
-            .Add(
-                "DeepAi",
-                new RequestHeader[]
-                {
-                    new(
-                        "api-key",
-                        "quickstart-QUdJIGlzIGNvbWluZy4uLi4K")
-                });
-
-    })
-    .AddEazyHttpClients()
-    .AddTransient<IRandomDog, RandomDog>()
-    .DoggoEnhancedAddEazyHttpClients()
-    .AddTransient<IImageAnalysis, ImageAnalysis>();
+    .RegisterServices();
 
 using var sp = services
     .BuildServiceProvider();
@@ -80,6 +28,7 @@ var dogService = scope
     .ServiceProvider
     .GetRequiredService<IRandomDog>();
 
+Start:
 var (data, fileName) = await dogService
     .GetAndSavePicture();
 
@@ -149,3 +98,13 @@ Process
     .Start(
         $"powershell.exe",
         newImageFileName);
+
+
+Console
+    .WriteLine(
+        "Press Q to quit");
+
+if (Console.ReadKey(true).Key != ConsoleKey.Q)
+{
+    goto Start;
+}
