@@ -24,4 +24,14 @@ public class EazyClientOptions
     /// TODO documentation
     /// </summary>
     public string NameSpacePrefix { get; set; } = string.Empty;
+
+    /// <summary>
+    /// TODO documentation
+    /// </summary>
+    public Dictionary<string, RetryConfiguration> Retries { get; } = new();
+
+    /// <summary>
+    /// TODO documentation
+    /// </summary>
+    public Dictionary<string, Encoding> Encodings { get; } = new();
 }

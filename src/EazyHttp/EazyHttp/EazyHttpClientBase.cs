@@ -3,11 +3,11 @@
 /// <summary>
 /// TODO documentation
 /// </summary>
-public abstract class EazyHttpClientBase : IEazyHttpClient
+public abstract partial class EazyHttpClientBase : IEazyHttpClient
 {
     private readonly HttpClient _httpClient;
 
-    private readonly Encoding _enc = Encoding.UTF8;
+    private readonly Encoding _enc;
 
     private readonly JsonSerializerOptions _serializer;
 
@@ -24,17 +24,10 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
     /// <summary>
     /// Http request headers
     /// </summary>
-    public HttpRequestHeaders Headers
-    {
-        get => _httpClient
+    public HttpRequestHeaders Headers => _httpClient
             .DefaultRequestHeaders;
-    }
 
-    /// <summary>
-    /// TODO docume
-    /// </summary>
-    /// <param name="httpClient"></param>
-    /// <param name="options"></param>
+    /// <inheritdoc/>
     public EazyHttpClientBase(
         HttpClient httpClient,
         IOptions<EazyClientOptions> options)
@@ -44,18 +37,30 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
         var name = GetType()
             .Name;
 
-        _serializer = new(
-            JsonSerializerDefaults
-            .Web);
-
         if (options.Value
             .PersistentHeaders
             .ContainsKey(name))
         {
-            AddHeaders(
-                options.Value
-                .PersistentHeaders[name]);
+            _httpClient
+                .AddHeaders(
+                    options.Value
+                    .PersistentHeaders[name]);
         }
+
+        _enc = Encoding.UTF8;
+
+        if (options.Value
+            .Encodings
+            .ContainsKey(name))
+        {
+            _enc = options
+                .Value
+                .Encodings[name];
+        }
+
+        _serializer = new(
+            JsonSerializerDefaults
+            .Web);
 
         if (options.Value
             .SerializersOptions
@@ -64,6 +69,22 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
             _serializer = options
                 .Value
                 .SerializersOptions[name];
+        }
+
+        _retryPolicy = new(
+            _httpClient,
+            _enc);
+
+        if (options.Value
+            .Retries
+            .ContainsKey(name))
+        {
+            _retryPolicy = new(
+                _httpClient,
+                _enc,
+                options
+                    .Value
+                    .Retries[name]);
         }
     }
 
@@ -79,6 +100,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
         where TResult : class => await HttpAsync<TResult>(
             async (url, content) => await _httpClient
                 .GetAsync(url, cancellationToken),
+            HttpMethod.Get,
             route,
             query,
             body: null,
@@ -113,6 +135,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                         content,
                         cancellationToken);
             },
+            HttpMethod.Put,
             route,
             query: null,
             body,
@@ -147,6 +170,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                         content,
                         cancellationToken);
             },
+            HttpMethod.Post,
             route,
             query: null,
             body,
@@ -173,6 +197,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
         where TResult : class => await HttpAsync<TResult>(
             async (url, content) => await _httpClient
                 .DeleteAsync(url, cancellationToken),
+            HttpMethod.Delete,
             route,
             query,
             body: null,
@@ -207,6 +232,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                         content,
                         cancellationToken);
             },
+            HttpMethod.Patch,
             route,
             query: null,
             body,
@@ -260,6 +286,7 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                         Content = form
                     },
                     cancellationToken),
+            HttpMethod.Post,
             route,
             query: null,
             body: null,
@@ -297,192 +324,13 @@ public abstract class EazyHttpClientBase : IEazyHttpClient
                         Content = form
                     },
                     cancellationToken),
+            HttpMethod.Post,
             route,
             query: null,
             body: null,
             authHeader,
             additionalHeaders,
             cancellationToken);
-    }
-
-
-    private async Task<TResult?> HttpAsync<TResult>(
-        Func<string, HttpContent?, Task<HttpResponseMessage>> sendAsync,
-        string route,
-        HttpQuery? query = default,
-        object? body = default,
-        AuthenticationHeaderValue? authHeader = default,
-        IEnumerable<RequestHeader>? additionalHeaders = default,
-        CancellationToken cancellationToken = default) where TResult : class
-    {
-        var url = CombineUrl(route, query);
-        if (authHeader is not null)
-        {
-            _httpClient
-                .DefaultRequestHeaders
-                .Authorization = authHeader;
-        }
-
-        AddHeaders(additionalHeaders);
-
-        var content = await _serializer
-            .GetContentFromBody(
-                body,
-                _enc,
-                cancellationToken);
-
-        using var response = await sendAsync(
-            url,
-            content);
-
-        RemoveHeaders(additionalHeaders);
-
-        if (authHeader is not null)
-        {
-            _httpClient
-                .DefaultRequestHeaders
-                .Authorization = null;
-        }
-
-        ResponseCode = (int)response.StatusCode;
-        ResponseStatus = $"{response.StatusCode}";
-
-        using var stream = await response
-            .Content
-            .ReadAsStreamAsync(
-                cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            var buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, buffer.Length);
-
-            throw new FailedRequestException(
-                $"Request did not succeed ({url}" +
-                $") [{ResponseCode}] {ResponseStatus}," +
-                $" result: {_enc.GetString(buffer)}");
-        }
-
-        return await DeserializeOrGetBytes<TResult>(
-            response.Content,
-            stream,
-            cancellationToken);        
-    }
-
-    private async Task<TResult?> DeserializeOrGetBytes<TResult>(
-        HttpContent content,
-        Stream stream,
-        CancellationToken cancellationToken)
-    {
-
-        if (content.Headers.Contains("Content-Type") &&
-            content.Headers.GetValues("Content-Type")
-                .Any(x => x.Contains("application/json")))
-        {
-            return await JsonSerializer
-                .DeserializeAsync<TResult>(
-                    stream,
-                    _serializer,
-                    cancellationToken);
-        }
-
-        try
-        {
-            var buffer = new byte[stream.Length];
-            await stream
-                .ReadAsync(
-                    buffer,
-                    cancellationToken);
-
-            if (typeof(TResult) == typeof(string))
-            {
-                return (TResult?)Convert
-                .ChangeType(
-                    _enc.GetString(buffer),
-                    typeof(TResult?));
-            }
-
-            return (TResult?)Convert
-                .ChangeType(
-                    buffer,
-                    typeof(TResult?));
-        }
-        catch (Exception ex)
-        {
-            throw new ByteArrayExpectedException(
-                "Response content type is not a valid " +
-                "JSON. A byte array TResult was expected!",
-                ex);
-        }
-    }
-
-    private string CombineUrl(
-        string route,
-        HttpQuery? query = default)
-    {
-        var url = _httpClient
-            .BaseAddress?
-            .ToString()
-            ?? string.Empty;
-
-        while (url.EndsWith("/"))
-        {
-            url = url.Remove(url.Length - 1);
-        }
-
-        url += "/";
-        route = $"{route}";
-
-        if (route.StartsWith(
-            "http",
-            StringComparison.OrdinalIgnoreCase))
-        {
-            url = string.Empty;
-        }
-
-        while (route.StartsWith("/"))
-        {
-            route = route[1..];
-        }
-
-        url += $"{route}{query}";
-
-        return url;
-    }
-
-    private void AddHeaders(
-        IEnumerable<RequestHeader>? headers)
-    {
-        if (headers is null)
-        {
-            return;
-        }
-
-        foreach (var h in headers.Distinct())
-        {
-            _httpClient
-                .DefaultRequestHeaders
-                .Add(
-                    h.Key,
-                    h.Value);
-        }
-    }
-
-    private void RemoveHeaders(
-        IEnumerable<RequestHeader>? headers)
-    {
-        if (headers is null)
-        {
-            return;
-        }
-
-        foreach (var h in headers.Distinct())
-        {
-            _httpClient
-                .DefaultRequestHeaders
-                .Remove(
-                    h.Key);
-        }
     }
 
     private static void SetApplicationJson(
