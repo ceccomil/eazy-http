@@ -106,5 +106,74 @@ See example: DoggoEnhanced
 [Computer Vision Prerequisites](https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/quickstarts-sdk/image-analysis-client-library?tabs=visual-studio&pivots=programming-language-csharp#prerequisites)
 - Please note that a custom serializer is in use for this example
 
+Retries policy
+=====================================
+-------------------------------------
+
+A retry policy can be specified for each client in a similar manner as setting the serializer or required headers.
+Each retry will have an exponential backoff as well as a random component, a seed can be set to keep results consistent
+
+```csharp
+...
+services
+    .ConfigureEazyHttpClients(
+        opts =>
+        {
+            opts
+                .EazyHttpClients
+                .Add(new(
+                    "MyClient1",
+                    "https://localhost:1/"));
+
+            opts
+                .EazyHttpClients
+                .Add(new(
+                    "MyClient2",
+                    "https://localhost:2/"));
+
+            opts
+                .Retries
+                .Add(
+                    "MyClient1",
+                    new()
+                    {
+                        MaxAttempts = 5,
+                        Seed = 12345
+                    });
+
+            opts
+                .Retries
+                .Add(
+                    "MyClient2",
+                    new()
+                    {
+                        MaxAttempts = 5,
+                        StatusCodeMatchingCondition = (status, method) =>
+                        {
+                            if (status is HttpStatusCode.ServiceUnavailable
+                                or HttpStatusCode.GatewayTimeout
+                                or HttpStatusCode.RequestTimeout)
+                            {
+                                return true;
+                            }
+
+                            if (status is HttpStatusCode.TooManyRequests &&
+                                method == HttpMethod.Get)
+                            {
+                                return true;
+                            }
+
+                            return false;
+                        }
+                    });
+        })
+        ...
+```
+See example: CrudApi.Client.Retries
+- If no retry policy is specified the default assumes 1 attempt therfore no retries on failure
+- In the example above, both clients are setting up a policy with 5 maximum retries
+- The second client has a configuration to establish which cases will be retried
+- The default implementation of `StatusCodeMatchingCondition`, first client, assumes retries only in case of 429 or 503 regardless of the http method.
+
 
 

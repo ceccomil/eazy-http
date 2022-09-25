@@ -144,12 +144,12 @@ Console
 Console
     .WriteLine(
         "For the third request we aim to fail all the attempts, " +
-        $"waiting until the 35th second to send the request");
+        $"waiting until the 20th second to send the request");
 
 Console
     .WriteLine();
 
-while (DateTime.UtcNow.Second < 35)
+while (DateTime.UtcNow.Second < 20)
 {
     await Task.Delay(100);
 }
