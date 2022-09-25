@@ -5,7 +5,7 @@ namespace EazyHttp;
 
 internal class RetryPolicy
 {
-    private readonly Dictionary<Guid, List<FailedRequestException>> _exceptions = new();
+    private readonly Dictionary<Guid, Jitter> _jitters = new();
     private readonly RetryConfiguration _conf;
     private readonly Random _random = new();
     private readonly HttpClient _httpClient;
@@ -44,7 +44,7 @@ internal class RetryPolicy
         var attempts = 0;
         var reqId = Guid.NewGuid();
 
-        _exceptions.Add(
+        _jitters.Add(
             reqId,
             new());
 
@@ -109,7 +109,8 @@ internal class RetryPolicy
         var buffer = new byte[rc.Content.Length];
         rc.Content.Read(buffer, 0, buffer.Length);
 
-        var exceptions = _exceptions[reqId];
+        var exceptions = _jitters[reqId]
+            .FailedRequests;
 
         exceptions
             .Add(
@@ -136,16 +137,23 @@ internal class RetryPolicy
                 exceptions);
             }
 
-            _exceptions
+            _jitters
                 .Remove(reqId);
 
             throw ex;
         }
 
+        var rng = (_random
+            .Next(100, 500) / 1000.0d) +
+            1.0d;
+
         var ts = TimeSpan
             .FromSeconds(
-                (attempts * DEFAULT_GAP) +
-                (DEFAULT_GAP * _random.NextDouble()));
+                (2.0 * _jitters[reqId].LastWait.TotalSeconds) +
+                (DEFAULT_GAP * rng));
+
+        _jitters[reqId]
+            .LastWait = ts;
 
         await Task
             .Delay(ts,
