@@ -5,14 +5,14 @@
 /// </summary>
 public abstract partial class EazyHttpClientBase : IEazyHttpClient
 {
+    private readonly Encoding _enc;
+
+    private readonly JsonSerializerOptions _serializer;
+
     /// <summary>
     /// TODO documentation 
     /// </summary>
     public HttpClient HttpClient { get; }
-
-    private readonly Encoding _enc;
-
-    private readonly JsonSerializerOptions _serializer;
 
     /// <summary>
     /// Gets the status code of the last HTTP request 
