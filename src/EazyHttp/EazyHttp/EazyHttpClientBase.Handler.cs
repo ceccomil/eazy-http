@@ -92,7 +92,7 @@ public abstract partial class EazyHttpClientBase
         string route,
         HttpQuery? query = default)
     {
-        var url = _httpClient
+        var url = HttpClient
             .BaseAddress?
             .ToString()
             ?? string.Empty;

@@ -5,7 +5,10 @@
 /// </summary>
 public abstract partial class EazyHttpClientBase : IEazyHttpClient
 {
-    private readonly HttpClient _httpClient;
+    /// <summary>
+    /// TODO documentation 
+    /// </summary>
+    public HttpClient HttpClient { get; }
 
     private readonly Encoding _enc;
 
@@ -24,7 +27,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
     /// <summary>
     /// Http request headers
     /// </summary>
-    public HttpRequestHeaders Headers => _httpClient
+    public HttpRequestHeaders Headers => HttpClient
             .DefaultRequestHeaders;
 
     /// <inheritdoc/>
@@ -32,7 +35,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         HttpClient httpClient,
         IOptions<EazyClientOptions> options)
     {
-        _httpClient = httpClient;
+        HttpClient = httpClient;
 
         var name = GetType()
             .Name;
@@ -41,7 +44,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             .PersistentHeaders
             .ContainsKey(name))
         {
-            _httpClient
+            HttpClient
                 .AddHeaders(
                     options.Value
                     .PersistentHeaders[name]);
@@ -72,7 +75,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         }
 
         _retryPolicy = new(
-            _httpClient,
+            HttpClient,
             _enc);
 
         if (options.Value
@@ -80,7 +83,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             .ContainsKey(name))
         {
             _retryPolicy = new(
-                _httpClient,
+                HttpClient,
                 _enc,
                 options
                     .Value
@@ -98,7 +101,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         IEnumerable<RequestHeader>? additionalHeaders = default,
         CancellationToken cancellationToken = default)
         where TResult : class => await HttpAsync<TResult>(
-            async (url, content) => await _httpClient
+            async (url, content) => await HttpClient
                 .GetAsync(url, cancellationToken),
             HttpMethod.Get,
             route,
@@ -129,7 +132,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             {
                 SetApplicationJson(content);
 
-                return await _httpClient
+                return await HttpClient
                     .PutAsync(
                         url,
                         content,
@@ -164,7 +167,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             {
                 SetApplicationJson(content);
 
-                return await _httpClient
+                return await HttpClient
                     .PostAsync(
                         url,
                         content,
@@ -195,7 +198,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         IEnumerable<RequestHeader>? additionalHeaders = default,
         CancellationToken cancellationToken = default)
         where TResult : class => await HttpAsync<TResult>(
-            async (url, content) => await _httpClient
+            async (url, content) => await HttpClient
                 .DeleteAsync(url, cancellationToken),
             HttpMethod.Delete,
             route,
@@ -226,7 +229,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             {
                 SetApplicationJson(content);
 
-                return await _httpClient
+                return await HttpClient
                     .PatchAsync(
                         url,
                         content,
@@ -279,7 +282,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         }
 
         return await HttpAsync<TResult>(
-            async (url, content) => await _httpClient
+            async (url, content) => await HttpClient
                 .SendAsync(
                     new(HttpMethod.Post, url)
                     {
@@ -317,7 +320,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             elements);
 
         return await HttpAsync<TResult>(
-            async (url, content) => await _httpClient
+            async (url, content) => await HttpClient
                 .SendAsync(
                     new(HttpMethod.Post, url)
                     {
