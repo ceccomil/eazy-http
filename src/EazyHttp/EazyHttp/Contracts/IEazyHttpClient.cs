@@ -6,6 +6,11 @@
 public interface IEazyHttpClient
 {
     /// <summary>
+    /// TODO documentation 
+    /// </summary>
+    HttpClient HttpClient { get; }
+
+    /// <summary>
     /// Gets the status code of the last HTTP request 
     /// </summary>
     int ResponseCode { get; }
