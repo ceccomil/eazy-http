@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EazyHttp" Version="0.2.10-beta" />
+    <PackageReference Include="EazyHttp" Version="0.2.14-beta" />
   </ItemGroup>
 
 </Project>
