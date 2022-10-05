@@ -14,15 +14,62 @@ public abstract partial class EazyHttpClientBase
         IEnumerable<RequestHeader>? additionalHeaders = default,
         CancellationToken cancellationToken = default) where TResult : class
     {
+        using var response = await HttpResponseAsync(
+            sendAsync,
+            httpMethod,
+            route,
+            query,
+            body,
+            authHeader,
+            additionalHeaders,
+            cancellationToken);
+
+        return await DeserializeOrGetBytes<TResult>(
+            response.Headers,
+            response.Content,
+            cancellationToken);
+    }
+
+    private async Task HttpAsync(
+        Func<string, HttpContent?, Task<HttpResponseMessage>> sendAsync,
+        HttpMethod httpMethod,
+        string route,
+        HttpQuery? query = default,
+        object? body = default,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default)
+    {
+        using var response = await HttpResponseAsync(
+            sendAsync,
+            httpMethod,
+            route,
+            query,
+            body,
+            authHeader,
+            additionalHeaders,
+            cancellationToken);
+    }
+
+    private async Task<ResponseContent> HttpResponseAsync(
+        Func<string, HttpContent?, Task<HttpResponseMessage>> sendAsync,
+        HttpMethod httpMethod,
+        string route,
+        HttpQuery? query = default,
+        object? body = default,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default)
+    {
         var url = CombineUrl(route, query);
-        
+
         var content = await _serializer
             .GetContentFromBody(
                 body,
                 _enc,
                 cancellationToken);
 
-        using var response = await _retryPolicy
+        var response = await _retryPolicy
             .SendAndRetry(
                 sendAsync,
                 httpMethod,
@@ -35,10 +82,7 @@ public abstract partial class EazyHttpClientBase
         ResponseCode = (int)response.StatusCode;
         ResponseStatus = $"{response.StatusCode}";
 
-        return await DeserializeOrGetBytes<TResult>(
-            response.Headers,
-            response.Content,
-            cancellationToken);
+        return response;
     }
 
     private async Task<TResult?> DeserializeOrGetBytes<TResult>(

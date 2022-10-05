@@ -38,6 +38,22 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
+    /// TODO Documentation
+    /// </summary>
+    /// <param name="route"></param>
+    /// <param name="query"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task GetAsync(
+        string route,
+        HttpQuery? query = default,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// TODO docume
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
@@ -53,6 +69,22 @@ public interface IEazyHttpClient
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
         CancellationToken cancellationToken = default) where TResult : class;
+
+    /// <summary>
+    /// TODO docum
+    /// </summary>
+    /// <param name="route"></param>
+    /// <param name="body"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task PutAsync(
+        string route,
+        object body,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// TODO Docume
@@ -71,7 +103,23 @@ public interface IEazyHttpClient
         IEnumerable<RequestHeader>? additionalHeaders = default,
         CancellationToken cancellationToken = default) where TResult : class;
 
-    
+    /// <summary>
+    /// TODO documen
+    /// </summary>
+    /// <param name="route"></param>
+    /// <param name="body"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task PostAsync(
+        string route,
+        object body,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default);
+
+
     /// <summary>
     /// TODO Document
     /// </summary>
@@ -88,6 +136,22 @@ public interface IEazyHttpClient
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
         CancellationToken cancellationToken = default) where TResult : class;
+
+    /// <summary>
+    /// TODO docu
+    /// </summary>
+    /// <param name="route"></param>
+    /// <param name="query"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task DeleteAsync(
+        string route,
+        HttpQuery? query = default,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// TODO docume
@@ -109,6 +173,22 @@ public interface IEazyHttpClient
     /// <summary>
     /// TODO docume
     /// </summary>
+    /// <param name="route"></param>
+    /// <param name="body"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task PatchAsync(
+        string route,
+        object body,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// TODO docume
+    /// </summary>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="route"></param>
     /// <param name="elements"></param>
@@ -126,6 +206,22 @@ public interface IEazyHttpClient
     /// <summary>
     /// TODO docume
     /// </summary>
+    /// <param name="route"></param>
+    /// <param name="elements"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task PostFormAsync(
+        string route,
+        IEnumerable<FormElement> elements,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// TODO docume
+    /// </summary>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="route"></param>
     /// <param name="elements"></param>
@@ -139,4 +235,20 @@ public interface IEazyHttpClient
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
         CancellationToken cancellationToken = default) where TResult : class;
+
+    /// <summary>
+    /// TODO docume
+    /// </summary>
+    /// <param name="route"></param>
+    /// <param name="elements"></param>
+    /// <param name="authHeader"></param>
+    /// <param name="additionalHeaders"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task PostUrlEncodedFormAsync(
+        string route,
+        IEnumerable<KeyValuePair<string, string?>> elements,
+        AuthenticationHeaderValue? authHeader = default,
+        IEnumerable<RequestHeader>? additionalHeaders = default,
+        CancellationToken cancellationToken = default);
 }
