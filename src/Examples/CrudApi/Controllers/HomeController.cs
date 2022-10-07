@@ -13,4 +13,11 @@ public class HomeController : Controller
         StatusCode = (int)HttpStatusCode.OK,
         Content = "Crud API - OK"
     };
+
+    [HttpGet("image")]
+    public async Task<IActionResult> GetPhoto() => await Task
+        .Run(() => File(
+            Properties.Resources.house,
+            "image/tiff",
+            "house.tiff"));
 }

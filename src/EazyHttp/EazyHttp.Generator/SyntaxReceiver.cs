@@ -1,4 +1,6 @@
-﻿namespace EazyHttp.Generator;
+﻿using System.Text.RegularExpressions;
+
+namespace EazyHttp.Generator;
 
 public class SyntaxReceiver : ISyntaxContextReceiver
 {
@@ -7,9 +9,12 @@ public class SyntaxReceiver : ISyntaxContextReceiver
     private const string CLIENTS_PROP = "EazyHttpClients";
     private const string NAMESPACE_PREFIX_DEF = ".NameSpacePrefix";
     private const string NAMESPACE_PREFIX_PROP = "NameSpacePrefix";
+    private const string HANDLERS_DEF = ".HttpClientHandlers";
+    private const string HANDLERS_PROP = "HttpClientHandlers";
 
     public List<string> GeneratorLogger { get; } = new();
-    public List<dynamic> Clients { get; private set; } = new();
+    public List<dynamic> Clients { get; } = new();
+    public Dictionary<string, string> Handlers { get; } = new();
 
     public bool ConfigFound { get; private set; }
 
@@ -57,6 +62,9 @@ public class SyntaxReceiver : ISyntaxContextReceiver
                 ies);
 
             SetNameSpacePrefix(
+                ies);
+
+            GetHandlers(
                 ies);
         }
     }
@@ -286,5 +294,79 @@ return {CLIENTS_PROP};";
                      $"Source code:{Environment.NewLine}" +
                      $"{code}{Environment.NewLine}{Environment.NewLine}");
         }
+    }
+
+    private void GetHandlers(
+        InvocationExpressionSyntax ies)
+    {
+        var lambda = ies
+                .DescendantNodes()
+                .OfType<LambdaExpressionSyntax>()
+                .LastOrDefault(x => $"{x}".Contains(HANDLERS_DEF));
+
+        if (lambda is null)
+        {
+            return;
+        }
+
+        GeneratorLogger.Add(
+            $"Found handlers config: {lambda}{Environment.NewLine}");
+
+        if (lambda.Body is not BlockSyntax body)
+        {
+            throw new NotSupportedException(
+                $"Lambda body: {lambda}, is not of " +
+                $"type {nameof(BlockSyntax)}");
+        }
+
+        GetHandlersFromLambda(
+            body);
+    }
+
+    private void GetHandlersFromLambda(
+        BlockSyntax body)
+    {
+        GeneratorLogger.Add(
+                    $"Lambda Body: {body}");
+
+        var nodes = body
+            .DescendantNodes()
+            .OfType<ExpressionStatementSyntax>()
+            .Where(x => $"{x}".Contains(HANDLERS_DEF));
+
+        var rgx = new Regex(
+            "\"(.+)\",\"(.+)\"");
+
+        foreach (var n in nodes)
+        {
+            GeneratorLogger.Add(
+                $"Nodes {n.GetType().Name}: {n}");
+
+            var statement = $"{n}"
+                .Replace(" ", "")
+                .Replace(Environment.NewLine, "");
+
+            GeneratorLogger.Add(
+                $"Stripped : {statement}");
+
+            var match = rgx
+                .Match(statement);
+
+            if (!match.Success)
+            {
+                continue;
+            }
+
+            if (Clients.Any(x => x.Name == match.Groups[1].Value) &&
+                !Handlers.ContainsKey(match.Groups[1].Value))
+            {
+                Handlers.Add(
+                    match.Groups[1].Value,
+                    match.Groups[2].Value);
+            }
+        }
+
+        GeneratorLogger.Add(
+                $"Handlers found {Handlers.Count}");
     }
 }
