@@ -1,4 +1,6 @@
-﻿namespace EazyHttp.Generator;
+﻿using System.Data;
+
+namespace EazyHttp.Generator;
 
 [Generator]
 public class CodeGenerator : ISourceGenerator
@@ -251,7 +253,21 @@ public static class RegisterHttpClients
             code += @$"
 
         services
-            .AddHttpClient<I{client.Name}, {client.Name}>();
+            .AddHttpClient<I{client.Name}, {client.Name}>()";
+
+            if (sr.Handlers.ContainsKey(client.Name))
+            {
+                var handler = sr
+                    .Handlers[client.Name];
+
+                code += @$"
+            .ConfigurePrimaryHttpMessageHandler<{handler}>();
+
+        services
+            .AddTransient<{handler}>()";
+            }
+
+            code += @";
 ";
         }
 

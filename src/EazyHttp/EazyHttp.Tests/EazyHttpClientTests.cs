@@ -22,6 +22,14 @@ public class EazyHttpClientTests
             httpClient.BaseAddress = new("https://locahost/test/");
         }
     }
+
+    public class TestHttpClientHandler : HttpClientHandler
+    {
+        public TestHttpClientHandler()
+        {
+            AutomaticDecompression = DecompressionMethods.GZip;
+        }
+    }
     
     public class TestResponse
     {
@@ -595,5 +603,32 @@ public class EazyHttpClientTests
         exception
             .Should()
             .NotBeNull();
+    }
+
+    [Fact]
+    public async Task When_attaching_an_http_handler()
+    {
+        var services = new ServiceCollection()
+            .AddTransient<TestHttpClientHandler>();
+
+        services
+            .AddHttpClient<TestHttpClient>()
+            .ConfigurePrimaryHttpMessageHandler<TestHttpClientHandler>();
+
+        var sp = services
+            .BuildServiceProvider()
+            .CreateScope()
+            .ServiceProvider;
+
+        var client = sp
+            .GetRequiredService<TestHttpClient>();
+
+        var result = await client
+            .GetAsync<string>(
+                "https://www.google.com");
+
+        result
+            .Should()
+            .NotBeNullOrEmpty();
     }
 }

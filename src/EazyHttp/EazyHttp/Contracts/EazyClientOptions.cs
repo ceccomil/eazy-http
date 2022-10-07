@@ -34,4 +34,9 @@ public class EazyClientOptions
     /// TODO documentation
     /// </summary>
     public Dictionary<string, Encoding> Encodings { get; } = new();
+
+    /// <summary>
+    /// TODO documentation
+    /// </summary>
+    public Dictionary<string, string> HttpClientHandlers { get; } = new();
 }
