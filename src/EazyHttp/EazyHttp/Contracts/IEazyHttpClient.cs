@@ -33,6 +33,8 @@ public interface IEazyHttpClient
     /// </exception>
     /// <exception cref="AggregateException">
     /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
+    /// </exception>
     Task<TResult?> GetAsync<TResult>(
         string route,
         HttpQuery? query = default,
@@ -53,6 +55,8 @@ public interface IEazyHttpClient
     /// <exception cref="FailedRequestException">
     /// </exception>
     /// <exception cref="AggregateException">
+    /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
     /// </exception>
     Task GetAsync(
         string route,
@@ -76,6 +80,8 @@ public interface IEazyHttpClient
     /// </exception>
     /// <exception cref="AggregateException">
     /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
+    /// </exception>
     Task<TResult?> PutAsync<TResult>(
         string route,
         object body,
@@ -96,6 +102,8 @@ public interface IEazyHttpClient
     /// <exception cref="FailedRequestException">
     /// </exception>
     /// <exception cref="AggregateException">
+    /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
     /// </exception>
     Task PutAsync(
         string route,
@@ -119,6 +127,8 @@ public interface IEazyHttpClient
     /// </exception>
     /// <exception cref="AggregateException">
     /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
+    /// </exception>
     Task<TResult?> PostAsync<TResult>(
         string route,
         object body,
@@ -139,6 +149,8 @@ public interface IEazyHttpClient
     /// <exception cref="FailedRequestException">
     /// </exception>
     /// <exception cref="AggregateException">
+    /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
     /// </exception>
     Task PostAsync(
         string route,
@@ -163,6 +175,8 @@ public interface IEazyHttpClient
     /// </exception>
     /// <exception cref="AggregateException">
     /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
+    /// </exception>
     Task<TResult?> DeleteAsync<TResult>(
         string route,
         HttpQuery? query = default,
@@ -183,6 +197,8 @@ public interface IEazyHttpClient
     /// <exception cref="FailedRequestException">
     /// </exception>
     /// <exception cref="AggregateException">
+    /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
     /// </exception>
     Task DeleteAsync(
         string route,
@@ -206,6 +222,8 @@ public interface IEazyHttpClient
     /// </exception>
     /// <exception cref="AggregateException">
     /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
+    /// </exception>
     Task<TResult?> PatchAsync<TResult>(
         string route,
         object body,
@@ -226,6 +244,8 @@ public interface IEazyHttpClient
     /// <exception cref="FailedRequestException">
     /// </exception>
     /// <exception cref="AggregateException">
+    /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
     /// </exception>
     Task PatchAsync(
         string route,
@@ -249,6 +269,8 @@ public interface IEazyHttpClient
     /// </exception>
     /// <exception cref="AggregateException">
     /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
+    /// </exception>
     Task<TResult?> PostFormAsync<TResult>(
         string route,
         IEnumerable<FormElement> elements,
@@ -269,6 +291,8 @@ public interface IEazyHttpClient
     /// <exception cref="FailedRequestException">
     /// </exception>
     /// <exception cref="AggregateException">
+    /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
     /// </exception>
     Task PostFormAsync(
         string route,
@@ -292,6 +316,8 @@ public interface IEazyHttpClient
     /// </exception>
     /// <exception cref="AggregateException">
     /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
+    /// </exception>
     Task<TResult?> PostUrlEncodedFormAsync<TResult>(
         string route,
         IEnumerable<KeyValuePair<string, string?>> elements,
@@ -312,6 +338,8 @@ public interface IEazyHttpClient
     /// <exception cref="FailedRequestException">
     /// </exception>
     /// <exception cref="AggregateException">
+    /// </exception>
+    /// <exception cref="ByteArrayExpectedException">
     /// </exception>
     Task PostUrlEncodedFormAsync(
         string route,

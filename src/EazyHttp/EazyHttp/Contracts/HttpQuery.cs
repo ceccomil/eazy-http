@@ -1,29 +1,28 @@
 ﻿namespace EazyHttp.Contracts;
 
 /// <summary>
-/// TODO documentation
+/// Represents the HttpRequest query string collection.
 /// </summary>
 public record HttpQuery
 {
     private readonly List<HttpQueryParam> _queryParameters = new();
 
     /// <summary>
-    /// TODO documentation
+    /// The collection of query parameters.
     /// </summary>
     public IEnumerable<HttpQueryParam> Parameters {
         get => _queryParameters;
     }
 
     /// <summary>
-    /// TODO documentation
+    /// Append a new <see cref="HttpQueryParam"/> to the collection.
     /// </summary>
-    /// <param name="parameter"></param>
     public void AddParam(
         HttpQueryParam parameter) => _queryParameters
         .Add(parameter);
 
     /// <summary>
-    /// Returns the URL encoded query string
+    /// Returns the URL encoded query string.
     /// </summary>
     public override string ToString()
     {
@@ -59,10 +58,8 @@ public record HttpQuery
 }
 
 /// <summary>
-/// TODO documentation
+/// Represents an http query field with its values
 /// </summary>
-/// <param name="Field"></param>
-/// <param name="Values"></param>
 public record HttpQueryParam(
     string Field,
     params string[] Values);

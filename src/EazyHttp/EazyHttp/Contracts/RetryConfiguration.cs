@@ -1,7 +1,7 @@
 ﻿namespace EazyHttp.Contracts;
 
 /// <summary>
-/// TODO documentation
+/// Represents a retry policy configuration for an <see cref="IEazyHttpClient"/>
 /// </summary>
 public class RetryConfiguration
 {
@@ -30,7 +30,27 @@ public class RetryConfiguration
     public int? Seed { get; set; }
 
     /// <summary>
-    /// TODO documentation
+    /// The policy implementation
+    /// <example>
+    /// Example:
+    /// <code>
+    /// StatusCodeMatchingCondition = (status, method) =>
+    /// {
+    ///     if (status is HttpStatusCode.ServiceUnavailable)
+    /// {
+    ///     return true;
+    /// }
+    /// 
+    /// if (method == HttpMethod.Post &amp;&amp;
+    ///     status is HttpStatusCode.TooManyRequests)
+    /// {
+    ///     return true;
+    /// }
+    /// 
+    /// return false;
+    /// };
+    /// </code>
+    /// </example>
     /// </summary>
     public Func<HttpStatusCode, HttpMethod, bool> StatusCodeMatchingCondition { get; set; }
 
