@@ -1,7 +1,7 @@
 ﻿namespace EazyHttp.Contracts.Exceptions;
 
 /// <summary>
-/// TODO Documentation
+/// Represents errors that occur when an http request returns a response code which is not a success.
 /// </summary>
 public class FailedRequestException : Exception
 {
@@ -11,10 +11,7 @@ public class FailedRequestException : Exception
     /// <inheritdoc/>
     public HttpMethod Method { get; }
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
-    public FailedRequestException(
+    internal FailedRequestException(
         HttpStatusCode statusCode,
         HttpMethod method) : this(
             statusCode,
@@ -22,10 +19,7 @@ public class FailedRequestException : Exception
             null)
     { }
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
-    public FailedRequestException(
+    internal FailedRequestException(
         HttpStatusCode statusCode,
         HttpMethod method,
         string? message) : this(
@@ -35,10 +29,7 @@ public class FailedRequestException : Exception
             null)
     { }
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
-    public FailedRequestException(
+    internal FailedRequestException(
         HttpStatusCode statusCode,
         HttpMethod method,
         string? message,

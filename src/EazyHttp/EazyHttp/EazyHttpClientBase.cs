@@ -1,7 +1,7 @@
 ﻿namespace EazyHttp;
 
 /// <summary>
-/// TODO documentation
+/// Base class for each EazyHttpClient implementation.
 /// </summary>
 public abstract partial class EazyHttpClientBase : IEazyHttpClient
 {
@@ -9,32 +9,22 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
 
     private readonly JsonSerializerOptions _serializer;
 
-    /// <summary>
-    /// TODO documentation 
-    /// </summary>
+    /// <inheritdoc/>
     public HttpClient HttpClient { get; }
 
-    /// <summary>
-    /// Gets the status code of the last HTTP request 
-    /// </summary>
+    /// <inheritdoc/>
     public int ResponseCode { get; private set; }
 
-    /// <summary>
-    /// Gets the status description of the last HTTP request 
-    /// </summary>
+    /// <inheritdoc/>
     public string ResponseStatus { get; private set; } = "Unknown";
 
-    /// <summary>
-    /// Http request headers
-    /// </summary>
+    /// <inheritdoc/>
     public HttpRequestHeaders Headers => HttpClient
             .DefaultRequestHeaders;
 
     /// <summary>
-    /// TODO documentation
+    /// Base constructor
     /// </summary>
-    /// <param name="httpClient"></param>
-    /// <param name="options"></param>
     public EazyHttpClientBase(
         HttpClient httpClient,
         IOptions<EazyClientOptions> options)
@@ -95,9 +85,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         }
     }
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    /// <inheritdoc/>
     public async Task<TResult?> GetAsync<TResult>(
         string route,
         HttpQuery? query = default,
@@ -115,15 +103,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO Documentation
-    /// </summary>
-    /// <param name="route"></param>
-    /// <param name="query"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task GetAsync(
         string route,
         HttpQuery? query = default,
@@ -141,16 +121,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO docume
-    /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<TResult?> PutAsync<TResult>(
         string route,
         object body,
@@ -176,15 +147,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO docume
-    /// </summary>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task PutAsync(
         string route,
         object body,
@@ -210,16 +173,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO Docume
-    /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<TResult?> PostAsync<TResult>(
         string route,
         object body,
@@ -245,15 +199,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO Docume
-    /// </summary>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task PostAsync(
         string route,
         object body,
@@ -279,16 +225,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO Document
-    /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="query"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<TResult?> DeleteAsync<TResult>(
         string route,
         HttpQuery? query = default,
@@ -306,15 +243,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO Document
-    /// </summary>
-    /// <param name="route"></param>
-    /// <param name="query"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task DeleteAsync(
         string route,
         HttpQuery? query = default,
@@ -332,16 +261,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO docume
-    /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<TResult?> PatchAsync<TResult>(
         string route,
         object body,
@@ -367,15 +287,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO docume
-    /// </summary>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task PatchAsync(
         string route,
         object body,
@@ -401,16 +313,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             additionalHeaders,
             cancellationToken);
 
-    /// <summary>
-    /// TODO docume
-    /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="elements"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<TResult?> PostFormAsync<TResult>(
         string route,
         IEnumerable<FormElement> elements,
@@ -456,15 +359,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             cancellationToken);
     }
 
-    /// <summary>
-    /// TODO docume
-    /// </summary>
-    /// <param name="route"></param>
-    /// <param name="elements"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task PostFormAsync(
         string route,
         IEnumerable<FormElement> elements,
@@ -509,16 +404,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             cancellationToken);
     }
 
-    /// <summary>
-    /// TODO docume
-    /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="elements"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<TResult?> PostUrlEncodedFormAsync<TResult>(
         string route,
         IEnumerable<KeyValuePair<string, string?>> elements,
@@ -547,15 +433,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             cancellationToken);
     }
 
-    /// <summary>
-    /// TODO docume
-    /// </summary>
-    /// <param name="route"></param>
-    /// <param name="elements"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task PostUrlEncodedFormAsync(
         string route,
         IEnumerable<KeyValuePair<string, string?>> elements,

@@ -1,26 +1,20 @@
 ﻿namespace EazyHttp.Contracts.Exceptions;
 
 /// <summary>
-/// TODO Documentation
+/// Represents errors that occur when a response content is expected to be an array of bytes
 /// </summary>
 public class ByteArrayExpectedException : Exception
 {
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    ///<inheritdoc/>
     public ByteArrayExpectedException() : base()
     { }
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    ///<inheritdoc/>
     public ByteArrayExpectedException(
         string? message) : base(message)
     { }
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    ///<inheritdoc/>
     public ByteArrayExpectedException(
         string? message,
         Exception? innerException) : base(
