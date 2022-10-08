@@ -1,25 +1,21 @@
 ﻿namespace EazyHttp.Contracts;
 
 /// <summary>
-/// TODO documentation
+/// Represent the collection of <see cref="IEazyHttpClient"/> definitions.
 /// </summary>
 public class HttpClientsCollection : ICollection<HttpClientDefinition>
 {
     private readonly List<HttpClientDefinition> _clients = new();
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    /// <inheritdoc/>
     public int Count => _clients
         .Count;
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    /// <inheritdoc/>
     public bool IsReadOnly => false;
 
     /// <summary>
-    /// TODO documentation
+    /// Default constructor.
     /// </summary>
     public HttpClientsCollection(
         IEnumerable<HttpClientDefinition>? collection = default)
@@ -34,43 +30,31 @@ public class HttpClientsCollection : ICollection<HttpClientDefinition>
             .AddRange(collection);
     }
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    /// <inheritdoc/>
     public void Add(
         HttpClientDefinition item) => _clients
             .Add(item);
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    /// <inheritdoc/>
     public void Clear() => _clients
         .Clear();
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    /// <inheritdoc/>
     public bool Contains(
         HttpClientDefinition item) => _clients
             .Contains(item);
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    /// <inheritdoc/>
     public void CopyTo(
         HttpClientDefinition[] array,
         int arrayIndex) => _clients
             .CopyTo(array, arrayIndex);
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    /// <inheritdoc/>
     public IEnumerator<HttpClientDefinition> GetEnumerator() => _clients
         .GetEnumerator();
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
+    /// <inheritdoc/>
     public bool Remove(
         HttpClientDefinition item) => _clients
             .Remove(item);
@@ -78,16 +62,14 @@ public class HttpClientsCollection : ICollection<HttpClientDefinition>
     IEnumerator IEnumerable.GetEnumerator() => _clients
         .GetEnumerator();
 
-    /// <summary>
-    /// TODO documentation
-    /// </summary>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public override string ToString() => string
         .Join(Environment.NewLine, _clients);
 }
 
 /// <summary>
-/// TODO documentation
+/// Represent the definition used to create an <see cref="IEazyHttpClient"/>.
+/// Client name and base address.
 /// </summary>
 public class HttpClientDefinition
 {
@@ -102,10 +84,8 @@ public class HttpClientDefinition
     public string? BaseAddress { get; }
 
     /// <summary>
-    /// TODO documentati
+    /// Default constructor
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="baseAddress"></param>
     public HttpClientDefinition(
     string name,
     string? baseAddress = default)
@@ -114,9 +94,6 @@ public class HttpClientDefinition
         BaseAddress = baseAddress;
     }
 
-    /// <summary>
-    /// TODO docum
-    /// </summary>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public override string ToString() => $"{Name} ({BaseAddress})";
 }

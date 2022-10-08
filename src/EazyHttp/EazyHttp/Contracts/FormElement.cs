@@ -1,35 +1,33 @@
 ﻿namespace EazyHttp.Contracts;
 
 /// <summary>
-/// TODO docume
+/// Multipart data content element
 /// </summary>
 public class FormElement
 {
     /// <summary>
-    /// TODO docume
+    /// The name of the field.
     /// </summary>
     public string QueryParam { get; }
 
     /// <summary>
-    /// TODO docume
+    /// The name of the file.
     /// </summary>
     public string? FileName { get; set; }
 
     /// <summary>
-    /// TODO docume
+    /// The content of the element.
     /// </summary>
     public HttpContent HttpElementContent { get; }
 
     /// <summary>
-    /// TODO docume
+    /// Instructs to send the content as a string or bytes.
     /// </summary>
     public bool SendAsString { get; }
 
     /// <summary>
-    /// TODO docu
+    /// Default constructor
     /// </summary>
-    /// <param name="queryParam"></param>
-    /// <param name="elementContent"></param>
     public FormElement(
         string queryParam,
         HttpContent elementContent)
