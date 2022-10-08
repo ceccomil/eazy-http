@@ -1,13 +1,11 @@
 ﻿namespace EazyHttp.Contracts;
 
 /// <summary>
-/// TODO documentation
+/// Specifies the contract for an EazyHttpClient implementaion.
 /// </summary>
 public interface IEazyHttpClient
 {
-    /// <summary>
-    /// TODO documentation 
-    /// </summary>
+    /// <inheritdoc/>
     HttpClient HttpClient { get; }
 
     /// <summary>
@@ -21,15 +19,20 @@ public interface IEazyHttpClient
     string ResponseStatus { get; }
 
     /// <summary>
-    /// TODO Documentation
+    /// Send a GET request and returns a deserialized <typeparamref name="TResult"/>.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="query"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <returns>A <typeparamref name="TResult"/>.</returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="query">Optional query parameters.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task<TResult?> GetAsync<TResult>(
         string route,
         HttpQuery? query = default,
@@ -38,14 +41,19 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
-    /// TODO Documentation
+    /// Send a GET request and discard the returned content if any.
     /// </summary>
-    /// <param name="route"></param>
-    /// <param name="query"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="query">Optional query parameters.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task GetAsync(
         string route,
         HttpQuery? query = default,
@@ -54,15 +62,20 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// TODO docume
+    /// Send a PUT request and returns a deserialized <typeparamref name="TResult"/>.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <returns>A <typeparamref name="TResult"/>.</returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="body">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task<TResult?> PutAsync<TResult>(
         string route,
         object body,
@@ -71,14 +84,19 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
-    /// TODO docum
+    /// Send a PUT request and discard the returned content if any.
     /// </summary>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="body">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task PutAsync(
         string route,
         object body,
@@ -87,15 +105,20 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// TODO Docume
+    /// Send a POST request and returns a deserialized <typeparamref name="TResult"/>.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <returns>A <typeparamref name="TResult"/>.</returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="body">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task<TResult?> PostAsync<TResult>(
         string route,
         object body,
@@ -104,14 +127,19 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
-    /// TODO documen
+    /// Send a POST request and discard the returned content if any.
     /// </summary>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="body">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task PostAsync(
         string route,
         object body,
@@ -121,15 +149,20 @@ public interface IEazyHttpClient
 
 
     /// <summary>
-    /// TODO Document
+    /// Send a DELETE request and returns a deserialized <typeparamref name="TResult"/>.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="query"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <returns>A <typeparamref name="TResult"/>.</returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="query">Optional query parameters.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task<TResult?> DeleteAsync<TResult>(
         string route,
         HttpQuery? query = default,
@@ -138,14 +171,19 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
-    /// TODO docu
+    /// Send a DELETE request and discard the returned content if any.
     /// </summary>
-    /// <param name="route"></param>
-    /// <param name="query"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="query">Optional query parameters.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task DeleteAsync(
         string route,
         HttpQuery? query = default,
@@ -154,15 +192,20 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// TODO docume
+    /// Send a PATCH request and returns a deserialized <typeparamref name="TResult"/>.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <returns>A <typeparamref name="TResult"/>.</returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="body">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task<TResult?> PatchAsync<TResult>(
         string route,
         object body,
@@ -171,14 +214,19 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
-    /// TODO docume
+    /// Send a PATCH request and discard the returned content if any.
     /// </summary>
-    /// <param name="route"></param>
-    /// <param name="body"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="body">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task PatchAsync(
         string route,
         object body,
@@ -187,15 +235,20 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// TODO docume
+    /// Send a POST (multipart/form-data) request and returns a deserialized <typeparamref name="TResult"/>.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="elements"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <returns>A <typeparamref name="TResult"/>.</returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="elements">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task<TResult?> PostFormAsync<TResult>(
         string route,
         IEnumerable<FormElement> elements,
@@ -204,14 +257,19 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
-    /// TODO docume
+    /// Send a POST (multipart/form-data) request and discard the returned content if any.
     /// </summary>
-    /// <param name="route"></param>
-    /// <param name="elements"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="elements">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task PostFormAsync(
         string route,
         IEnumerable<FormElement> elements,
@@ -220,15 +278,20 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// TODO docume
+    /// Send a POST (application/x-www-form-urlencoded) request and returns a deserialized <typeparamref name="TResult"/>.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="route"></param>
-    /// <param name="elements"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <returns>A <typeparamref name="TResult"/>.</returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="elements">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task<TResult?> PostUrlEncodedFormAsync<TResult>(
         string route,
         IEnumerable<KeyValuePair<string, string?>> elements,
@@ -237,14 +300,19 @@ public interface IEazyHttpClient
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
-    /// TODO docume
+    /// Send a POST (application/x-www-form-urlencoded) request and discard the returned content if any.
     /// </summary>
-    /// <param name="route"></param>
-    /// <param name="elements"></param>
-    /// <param name="authHeader"></param>
-    /// <param name="additionalHeaders"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="route">Absolute or relative URI (relative URI depends on base address).</param>
+    /// <param name="elements">The body of the request.</param>
+    /// <param name="authHeader">Optional authentication header.</param>
+    /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="cancellationToken">
+    /// The cancellation token that can be used to cancel the operation.
+    /// </param>
+    /// <exception cref="FailedRequestException">
+    /// </exception>
+    /// <exception cref="AggregateException">
+    /// </exception>
     Task PostUrlEncodedFormAsync(
         string route,
         IEnumerable<KeyValuePair<string, string?>> elements,
