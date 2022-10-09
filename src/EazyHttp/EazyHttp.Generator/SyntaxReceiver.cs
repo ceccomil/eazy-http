@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace EazyHttp.Generator;
+﻿namespace EazyHttp.Generator;
 
 public class SyntaxReceiver : ISyntaxContextReceiver
 {
@@ -115,7 +113,8 @@ public class SyntaxReceiver : ISyntaxContextReceiver
             GeneratorLogger.Add(
                 $"Nodes {n.GetType().Name}: {n}");
 
-            var statement = $"{n}";
+            var statement = n
+                .FlattenLine();
 
             var idx = statement
                 .IndexOf(NAMESPACE_PREFIX_PROP);
@@ -224,7 +223,8 @@ return {NAMESPACE_PREFIX_PROP};";
             GeneratorLogger.Add(
                 $"Nodes {n.GetType().Name}: {n}");
 
-            var statement = $"{n}";
+            var statement = n
+                .ToVariableStatement();
 
             var idx = statement
                 .IndexOf(CLIENTS_PROP);
@@ -255,6 +255,9 @@ public class Definition
 var {CLIENTS_PROP} = new List<Definition>();
 {string.Join(Environment.NewLine, statements)}
 return {CLIENTS_PROP};";
+
+        GeneratorLogger.Add(
+                $"Code to be evaluated: {code}");
 
         var exprEval = new ExpressionEvaluator();
         var input = exprEval
@@ -334,22 +337,18 @@ return {CLIENTS_PROP};";
             .OfType<ExpressionStatementSyntax>()
             .Where(x => $"{x}".Contains(HANDLERS_DEF));
 
-        var rgx = new Regex(
-            "\"(.+)\",\"(.+)\"");
-
         foreach (var n in nodes)
         {
             GeneratorLogger.Add(
                 $"Nodes {n.GetType().Name}: {n}");
 
-            var statement = $"{n}"
-                .Replace(" ", "")
-                .Replace(Environment.NewLine, "");
+            var statement = n
+                .FlattenLine();
 
             GeneratorLogger.Add(
                 $"Stripped : {statement}");
 
-            var match = rgx
+            var match = StringsPair
                 .Match(statement);
 
             if (!match.Success)

@@ -1,7 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Scripting.Hosting;
-using System.Reflection;
-
-namespace EazyHttp.Generator.CsScript;
+﻿namespace EazyHttp.Generator.CsScript;
 
 internal class ExpressionEvaluator
 {
