@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace EazyHttp.Generator.CsScript;
+﻿namespace EazyHttp.Generator.CsScript;
 
 internal class ScriptInput
 {
