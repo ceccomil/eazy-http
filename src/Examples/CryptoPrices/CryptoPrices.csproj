@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,19 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <Compile Remove="Properties\**" />
-    <EmbeddedResource Remove="Properties\**" />
-    <None Remove="Properties\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Doggo\Doggo.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="CaptainLogger" Version="1.1.5" />
+    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="1.1.5" />
     <PackageReference Include="EazyHttp" Version="1.2.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
   </ItemGroup>
 
 </Project>
