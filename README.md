@@ -181,7 +181,7 @@ Custom HttpClientHandler
 
 A custom HttpClientHandler can be specified for each client in a similar manner as setting the serializer or required headers.
 The generator will add the name provide as one of the injected parameters of the EazyHttpClient class.
-Please make sure that the name provided is a fully qualified name (or use global using) and the handler as been registered to the DI pipeline.
+Please make sure that the name provided is a fully qualified name (or use global using) and the handler has been registered to the DI pipeline.
 
 ```csharp
 ...
@@ -198,7 +198,7 @@ services
             opts
                 .HttpClientHandlers
                 .Add(
-                    "MessariClient",
+                    "MyClient1",
                     "MyNameSpace.CustomHttpHandler");
         })
         .AddTransient<CustomHttpHandler>();
