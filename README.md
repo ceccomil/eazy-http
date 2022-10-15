@@ -175,5 +175,36 @@ See example: CrudApi.Client.Retries
 - The second client has a configuration to establish which cases will be retried
 - The default implementation of `StatusCodeMatchingCondition`, first client, assumes retries only in case of 429 or 503 regardless of the http method.
 
+Custom HttpClientHandler
+=====================================
+-------------------------------------
+
+A custom HttpClientHandler can be specified for each client in a similar manner as setting the serializer or required headers.
+The generator will add the name provide as one of the injected parameters of the EazyHttpClient class.
+Please make sure that the name provided is a fully qualified name (or use global using) and the handler as been registered to the DI pipeline.
+
+```csharp
+...
+services
+    .ConfigureEazyHttpClients(
+        opts =>
+        {
+            opts
+                .EazyHttpClients
+                .Add(new(
+                    "MyClient1",
+                    "https://localhost:1/"));
+
+            opts
+                .HttpClientHandlers
+                .Add(
+                    "MessariClient",
+                    "MyNameSpace.CustomHttpHandler");
+        })
+        .AddTransient<CustomHttpHandler>();
+        ...
+```
+See example: CryptoPrices
+
 
 

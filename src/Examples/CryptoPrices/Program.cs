@@ -5,7 +5,7 @@ using CaptainLogger;
 using CaptainLogger.Options;
 using Microsoft.Extensions.Logging;
 using EazyHttp.Contracts;
-using BitcoinPriceIndex;
+using CryptoPrices;
 
 var services = new ServiceCollection()
     .ConfigureEazyHttpClients(opts =>
@@ -15,16 +15,32 @@ var services = new ServiceCollection()
             .Add(new(
                 "MessariClient",
                 "https://data.messari.io/api/v2"));
+
+        opts
+            .HttpClientHandlers
+            .Add(
+                "MessariClient",
+                "CryptoPrices.CustomHttpHandler");
     })
     .AddEazyHttpClients()
     .Configure<CaptainLoggerOptions>(opts =>
     {
         opts.TimeIsUtc = true;
         opts.LogRecipients = Recipients.Console;
-        opts.ArgumentsCount = LogArguments.Three;
+        opts.ArgumentsCount = LogArguments.Four;
+
+        opts.Templates.Add(
+            LogArguments.Two,
+            "Sending request [{HttpMethod}] {Uri}");
+
         opts.Templates.Add(
                 LogArguments.Three,
                 "Today's {Position} coin is:\r\n{Slug} at {Price:N10} USD");
+
+        opts.Templates.Add(
+                LogArguments.Four,
+                "Response [{Code}] - {Phrase} Http version " +
+                "{Version}\r\nContent class type: {ContentEncoding}");
 
     })
     .AddLogging(builder =>
@@ -35,7 +51,8 @@ var services = new ServiceCollection()
             .AddFilter(
                 "",
                 LogLevel.Information);
-    });
+    })
+    .AddTransient<CustomHttpHandler>();
 
 
 using var sp = services
@@ -64,9 +81,6 @@ logger
         "Setting up query parameters");
 
 query.AddParam(new("fields", "id,slug,symbol,metrics/market_data/price_usd"));
-
-logger
-    .InformationLog("Sending request");
 
 var result = await coinClient
     .GetAsync<ResultDto>(
