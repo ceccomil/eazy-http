@@ -35,7 +35,8 @@ var services = new ServiceCollection()
 
         opts.Templates.Add(
                 LogArguments.Three,
-                "Today's {Position} coin is:\r\n{Slug} at {Price:N10} USD");
+                "Today's {Position} coin is:\r\n" +
+                "{Slug} at {Price:N10} USD");
 
         opts.Templates.Add(
                 LogArguments.Four,
@@ -65,10 +66,12 @@ var logger = sp
     .GetRequiredService<ICaptainLogger<MessariClient>>();
 
 logger
-    .InformationLog("Application is starting");
+    .InformationLog(
+        "Application is starting");
 
 logger
-    .InformationLog("Getting Eazy Http clients from DI container");
+    .InformationLog(
+        "Getting Eazy Http clients from DI container");
 
 var coinClient = sp
     .GetRequiredService<IEazyClients>()
@@ -80,7 +83,10 @@ logger
     .InformationLog(
         "Setting up query parameters");
 
-query.AddParam(new("fields", "id,slug,symbol,metrics/market_data/price_usd"));
+query.AddParam(new(
+    "fields",
+    "id,slug,symbol,metrics" +
+    "/market_data/price_usd"));
 
 var result = await coinClient
     .GetAsync<ResultDto>(
