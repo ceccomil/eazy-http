@@ -6,7 +6,6 @@ public class ResultDto
 {
     public StatusDto Status { get; set; } = null!;
     public IEnumerable<DataDto> Data { get; set; } = null!;
-
 }
 
 public class StatusDto
