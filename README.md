@@ -9,13 +9,16 @@ Packages
 --------
 | Package | NuGet Stable | NuGet Pre-release | Downloads |
 | ------- | ------------ | ----------------- | --------- | 
-| [EazyHttp](https://www.nuget.org/packages/EazyHttp) | [![CaptainLogger](https://img.shields.io/nuget/v/EazyHttp.svg)](https://www.nuget.org/packages/EazyHttp) | [![CaptainLogger](https://img.shields.io/nuget/vpre/EazyHttp.svg)](https://www.nuget.org/packages/EazyHttp/) | [![CaptainLogger](https://img.shields.io/nuget/dt/EazyHttp.svg)](https://www.nuget.org/packages/EazyHttp/) |
+| [EazyHttp](https://www.nuget.org/packages/EazyHttp) | [![EazyHttp](https://img.shields.io/nuget/v/EazyHttp.svg)](https://www.nuget.org/packages/EazyHttp) | [![EazyHttp](https://img.shields.io/nuget/vpre/EazyHttp.svg)](https://www.nuget.org/packages/EazyHttp/) | [![EazyHttp](https://img.shields.io/nuget/dt/EazyHttp.svg)](https://www.nuget.org/packages/EazyHttp/) |
 
 Features
 --------
-- Typed Http client wrapper to perform requests
+- Typed Http clients wrapper to perform requests
 - Customizable serializer options using System.Text.Json
 - Easy, minimal configuration
+- Customizable HttpClientHandler
+- Customizable retry policies
+- Works with Blazor WASM and Microsoft Identity Platform (see example BlazorWeather)
 
 Minimum configuration
 =====================================
@@ -181,7 +184,7 @@ Custom HttpClientHandler
 
 A custom HttpClientHandler can be specified for each client in a similar manner as setting the serializer or required headers.
 The generator will add the name provide as one of the injected parameters of the EazyHttpClient class.
-Please make sure that the name provided is a fully qualified name (or use global using) and the handler has been registered to the DI pipeline.
+Please make sure that the name provided is a fully qualified name (or use global using).
 
 ```csharp
 ...
@@ -200,8 +203,7 @@ services
                 .Add(
                     "MyClient1",
                     "MyNameSpace.CustomHttpHandler");
-        })
-        .AddTransient<CustomHttpHandler>();
+        });
         ...
 ```
 See example: CryptoPrices
