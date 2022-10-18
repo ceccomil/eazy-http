@@ -52,8 +52,7 @@ var services = new ServiceCollection()
             .AddFilter(
                 "",
                 LogLevel.Information);
-    })
-    .AddTransient<CustomHttpHandler>();
+    });
 
 
 using var sp = services
