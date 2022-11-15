@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EazyHttp" Version="1.2.1" PrivateAssets="All" />
+    <PackageReference Include="EazyHttp" Version="2.2.20-beta" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
