@@ -44,7 +44,7 @@ public static class Program
                     .ProviderOptions
                     .DefaultAccessTokenScopes
                     .Add(
-                        builder.Configuration.GetSection("ServerApi")["Scopes"]);
+                        builder.Configuration.GetSection("ServerApi")["Scopes"]!);
             });
 
         await builder
