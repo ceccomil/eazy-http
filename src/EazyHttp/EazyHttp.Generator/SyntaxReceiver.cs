@@ -273,14 +273,6 @@ return {CLIENTS_PROP};";
 
         GeneratorLogger.Add(
                 $"Code to be evaluated: {code}");
-
-        //var exprEval = new ExpressionEvaluator();
-        //var input = exprEval
-        //    .InitInput(new()
-        //    {
-        //        Code = code
-        //    });
-
         try
         {
             var mscorlib = typeof(object)
@@ -324,16 +316,6 @@ return {CLIENTS_PROP};";
             GeneratorLogger.Add(
                      $"ERROR: {ex}");
         }
-
-        //if (exprEval.EvalException is not null)
-        //{
-        //    GeneratorLogger.Add(
-        //                 $"ExpressionEx: {exprEval.EvalException}");
-
-        //    GeneratorLogger.Add(
-        //             $"Source code:\r\n" +
-        //             $"{code}\r\n\r\n");
-        //}
     }
 
     private void GetHandlers(
