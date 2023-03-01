@@ -64,7 +64,7 @@ public class HttpClientsCollection : ICollection<HttpClientDefinition>
 
     /// <inheritdoc/>
     public override string ToString() => string
-        .Join(Environment.NewLine, _clients);
+        .Join("\r\n", _clients);
 }
 
 /// <summary>
