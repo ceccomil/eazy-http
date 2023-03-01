@@ -231,8 +231,14 @@ public interface IEazyClients
         I{client.Name} {client.Name.ToLower()},";
         }
 
-        code = code
-            .Remove(code.Length - 1) +
+        if (code.EndsWith(","))
+        {
+            code = code
+                .Remove(
+                    code.Length - 1);
+        }
+
+        code += 
             @")
     {";
 
