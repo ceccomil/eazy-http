@@ -12,4 +12,8 @@ global using System.Text.Json.Serialization;
 global using System.Text.Json;
 global using EazyHttp.Helpers;
 global using System.Text;
+global using EazyHttp.Generator;
+global using Microsoft.CodeAnalysis.CSharp;
+global using Microsoft.CodeAnalysis;
+global using System.Reflection;
 

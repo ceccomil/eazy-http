@@ -53,10 +53,10 @@ internal class ExpressionEvaluator
                 .RegisterDependency(_linq);
         }
 
-        AddRefsAndImports(
-            input.Refs,
-            input.Imports,
-            input.LoadedAssemblies);
+        //AddRefsAndImports(
+        //    input.Refs,
+        //    input.Imports,
+        //    input.LoadedAssemblies);
 
         if (input.Globals is not CsGlobals gO)
         {
@@ -114,52 +114,52 @@ internal class ExpressionEvaluator
         return default!;
     }
 
-    private void AddRefsAndImports(
-        IEnumerable<string>? refs,
-        IEnumerable<string>? imports,
-        ICollection<Assembly> assemblies)
-    {
-        if (_loader is null || _scriptOpts is null)
-        {
-            return;
-        }
+    //private void AddRefsAndImports(
+    //    IEnumerable<string>? refs,
+    //    IEnumerable<string>? imports,
+    //    ICollection<Assembly> assemblies)
+    //{
+    //    if (_loader is null || _scriptOpts is null)
+    //    {
+    //        return;
+    //    }
 
-        if (refs is null && imports is null)
-        {
-            return;
-        }
+    //    if (refs is null && imports is null)
+    //    {
+    //        return;
+    //    }
 
-        if (refs is not null)
-        {
-            foreach (var r in refs)
-            {
-                var a = r.StartsWith("@")
-                    ? Assembly
-                        .LoadFrom(
-                            r.Substring(1))
-                    : Assembly
-                        .Load(r);
+    //    if (refs is not null)
+    //    {
+    //        foreach (var r in refs)
+    //        {
+    //            var a = r.StartsWith("@")
+    //                ? Assembly
+    //                    .LoadFrom(
+    //                        r.Substring(1))
+    //                : Assembly
+    //                    .Load(r);
 
-                _scriptOpts = _scriptOpts
-                    .AddReferences(a);
+    //            _scriptOpts = _scriptOpts
+    //                .AddReferences(a);
 
-                _loader
-                    .RegisterDependency(a);
+    //            _loader
+    //                .RegisterDependency(a);
 
-                if (!assemblies.Contains(a))
-                {
-                    assemblies.Add(a);
-                }
-            }
-        }
+    //            if (!assemblies.Contains(a))
+    //            {
+    //                assemblies.Add(a);
+    //            }
+    //        }
+    //    }
 
-        if (imports is not null)
-        {
-            foreach (var i in imports)
-            {
-                _scriptOpts = _scriptOpts.AddImports(i);
-            }
-        }
-    }
+    //    if (imports is not null)
+    //    {
+    //        foreach (var i in imports)
+    //        {
+    //            _scriptOpts = _scriptOpts.AddImports(i);
+    //        }
+    //    }
+    //}
 
 }
