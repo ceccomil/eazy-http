@@ -26,7 +26,7 @@ public class GeneratorTests
     public void Generator_when_working()
     {
         // Arrange
-        Compilation inputClass = CreateCompilation(
+        var inputClass = CreateCompilation(
             """
             services
             .ConfigureEazyHttpClients(opts =>

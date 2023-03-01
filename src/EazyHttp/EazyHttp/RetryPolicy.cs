@@ -120,7 +120,7 @@ internal class RetryPolicy
                     $"{DateTime.UtcNow} Request did not succeed ({url}" +
                     $") [{httpMethod} {(int)rc.StatusCode}]" +
                     $" {rc.StatusCode}, result:" +
-                    $"{Environment.NewLine}{_enc.GetString(buffer)}"));
+                    $"\r\n{_enc.GetString(buffer)}"));
 
         if (attempts >= _conf.MaxAttempts ||
             !_conf.StatusCodeMatchingCondition(

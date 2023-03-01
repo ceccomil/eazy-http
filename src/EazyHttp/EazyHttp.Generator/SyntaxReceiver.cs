@@ -49,10 +49,10 @@ public class SyntaxReceiver : ISyntaxContextReceiver
         {
             GeneratorLogger.Add(
             $"Search for `{EXT_METHOD}`: " +
-            $"is successful!{Environment.NewLine}{Environment.NewLine}");
+            $"is successful!\r\n\r\n");
 
             GeneratorLogger.Add(
-                $"Found: {code}{Environment.NewLine}");
+                $"Found: {code}\r\n");
 
             ConfigFound = true;
 
@@ -82,7 +82,7 @@ public class SyntaxReceiver : ISyntaxContextReceiver
 
         GeneratorLogger.Add(
             $"Search for `{NAMESPACE_PREFIX_DEF}`: " +
-            $"is successful!{Environment.NewLine}{Environment.NewLine}");
+            $"is successful!\r\n\r\n");
 
         if (lambda.Body is not BlockSyntax body)
         {
@@ -126,21 +126,23 @@ public class SyntaxReceiver : ISyntaxContextReceiver
         }
 
         var code = @$"
-var {string.Join(Environment.NewLine, statements)}
+var {string.Join("\r\n", statements)}
 
 return {NAMESPACE_PREFIX_PROP};";
 
-        var exprEval = new ExpressionEvaluator();
-        var input = exprEval
-            .InitInput(new()
-            {
-                Code = code
-            });
+        //var exprEval = new ExpressionEvaluator();
+        //var input = exprEval
+        //    .InitInput(new()
+        //    {
+        //        Code = code
+        //    });
+
+        
 
         try
         {
-            var result = exprEval
-                .GetEvaluated<string>(input)
+            var result = CSharpScript
+                .EvaluateAsync<string>(code)
                 .Result;
 
             _nameSpacePrefix = $"{result}";
@@ -151,19 +153,19 @@ return {NAMESPACE_PREFIX_PROP};";
                      $"ERROR: {ex}");
 
             GeneratorLogger.Add(
-                     $"Source code:{Environment.NewLine}" +
-                     $"{code}{Environment.NewLine}{Environment.NewLine}");
+                     $"Source code:\r\n" +
+                     $"{code}\r\n\r\n");
         }
 
-        if (exprEval.EvalException is not null)
-        {
-            GeneratorLogger.Add(
-                         $"ExpressionEx: {exprEval.EvalException}");
+        //if (exprEval.EvalException is not null)
+        //{
+        //    GeneratorLogger.Add(
+        //                 $"ExpressionEx: {exprEval.EvalException}");
 
-            GeneratorLogger.Add(
-                     $"Source code:{Environment.NewLine}" +
-                     $"{code}{Environment.NewLine}{Environment.NewLine}");
-        }
+        //    GeneratorLogger.Add(
+        //             $"Source code:\r\n" +
+        //             $"{code}\r\n\r\n");
+        //}
 
         GeneratorLogger.Add(
                 $"NameSpacePrefix: {NameSpacePrefix}");
@@ -192,7 +194,7 @@ return {NAMESPACE_PREFIX_PROP};";
         }
 
         GeneratorLogger.Add(
-            $"Found client config: {lambda}{Environment.NewLine}");
+            $"Found client config: {lambda}\r\n");
 
         if (lambda.Body is not BlockSyntax body)
         {
@@ -253,23 +255,45 @@ public class Definition
 }}
 
 var {CLIENTS_PROP} = new List<Definition>();
-{string.Join(Environment.NewLine, statements)}
+{string.Join("\r\n", statements)}
 return {CLIENTS_PROP};";
 
         GeneratorLogger.Add(
                 $"Code to be evaluated: {code}");
 
-        var exprEval = new ExpressionEvaluator();
-        var input = exprEval
-            .InitInput(new()
-            {
-                Code = code
-            });
+        //var exprEval = new ExpressionEvaluator();
+        //var input = exprEval
+        //    .InitInput(new()
+        //    {
+        //        Code = code
+        //    });
 
         try
         {
-            var result = exprEval
-                .GetEvaluated<dynamic>(input)
+            var mscorlib = typeof(object)
+                .GetTypeInfo()
+                .Assembly;
+
+            var linq = typeof(Enumerable)
+                    .GetTypeInfo()
+                    .Assembly;
+
+            var scriptOpts = ScriptOptions.Default;
+
+            scriptOpts = scriptOpts.AddReferences(mscorlib);
+            scriptOpts = scriptOpts.AddReferences(linq);
+
+            // using
+            scriptOpts = scriptOpts
+                .AddImports("System")
+                .AddImports("System.Linq")
+                .AddImports("System.Collections.Generic")
+                .AddImports("System.Threading.Tasks");
+
+            var result = CSharpScript
+                .EvaluateAsync<dynamic>(
+                    code,
+                    scriptOpts)
                 .Result;
 
             Clients.Clear();
@@ -288,15 +312,15 @@ return {CLIENTS_PROP};";
                      $"ERROR: {ex}");
         }
 
-        if (exprEval.EvalException is not null)
-        {
-            GeneratorLogger.Add(
-                         $"ExpressionEx: {exprEval.EvalException}");
+        //if (exprEval.EvalException is not null)
+        //{
+        //    GeneratorLogger.Add(
+        //                 $"ExpressionEx: {exprEval.EvalException}");
 
-            GeneratorLogger.Add(
-                     $"Source code:{Environment.NewLine}" +
-                     $"{code}{Environment.NewLine}{Environment.NewLine}");
-        }
+        //    GeneratorLogger.Add(
+        //             $"Source code:\r\n" +
+        //             $"{code}\r\n\r\n");
+        //}
     }
 
     private void GetHandlers(
@@ -313,7 +337,7 @@ return {CLIENTS_PROP};";
         }
 
         GeneratorLogger.Add(
-            $"Found handlers config: {lambda}{Environment.NewLine}");
+            $"Found handlers config: {lambda}\r\n");
 
         if (lambda.Body is not BlockSyntax body)
         {
