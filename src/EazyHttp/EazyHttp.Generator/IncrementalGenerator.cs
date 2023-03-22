@@ -1,5 +1,6 @@
 ﻿namespace EazyHttp.Generator;
 
+[Generator]
 public class IncrementalGenerator : IIncrementalGenerator
 {
     public void Initialize(
