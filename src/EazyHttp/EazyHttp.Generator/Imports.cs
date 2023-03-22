@@ -8,3 +8,7 @@ global using System.Text.RegularExpressions;
 global using Microsoft.CodeAnalysis.Scripting.Hosting;
 global using System.Reflection;
 global using static EazyHttp.Generator.Helpers.StatementsExtensions;
+global using EazyHttp.Generator.Helpers;
+global using EazyHttp.Generator.Contracts;
+global using System.Collections.Immutable;
+
