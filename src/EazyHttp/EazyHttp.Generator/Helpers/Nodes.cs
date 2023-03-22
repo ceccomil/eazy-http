@@ -2,14 +2,6 @@
 
 internal static class Nodes
 { 
-    private const string EXT_METHOD = "ConfigureEazyHttpClients";
-    private const string CLIENTS_DEF = ".EazyHttpClients";
-    private const string CLIENTS_PROP = "EazyHttpClients";
-    private const string NAMESPACE_PREFIX_DEF = ".NameSpacePrefix";
-    private const string NAMESPACE_PREFIX_PROP = "NameSpacePrefix";
-    private const string HANDLERS_DEF = ".HttpClientHandlers";
-    private const string HANDLERS_PROP = "HttpClientHandlers";
-
     public static bool IsConfigFound(
         SyntaxNode node) => node is InvocationExpressionSyntax ies &&
             $"{ies}" is string code &&
@@ -121,18 +113,10 @@ internal static class Nodes
                     .Substring(idx));
         }
 
-        var code = @$"
-var {string.Join("\r\n", statements)}
-
-return {NAMESPACE_PREFIX_PROP};";
-
-        var result = CSharpScript
-                .EvaluateAsync<string>(code)
-                .Result;
-
         config
             .SetNameSpacePrefix(
-                $"{result}");
+                statements
+                .ToNameSpacePrefix());
     }
 
     private static void GetClientsSetupFromLambda(
@@ -160,58 +144,11 @@ return {NAMESPACE_PREFIX_PROP};";
                     .Substring(idx));
         }
 
-        var code = @$"
-public class Definition
-{{
-    public string Name {{ get; }}
-    public string? BaseAddress {{ get; }}
-
-    public Definition(
-    string name,
-    string? baseAddress = default)
-    {{
-        Name = name;
-        BaseAddress = baseAddress;
-    }}
-
-    public override string ToString() => $""{{Name}} ({{BaseAddress}})"";
-}}
-
-var {CLIENTS_PROP} = new List<Definition>();
-{string.Join("\r\n", statements)}
-return {CLIENTS_PROP};";
-
-        var mscorlib = typeof(object)
-                .GetTypeInfo()
-                .Assembly;
-
-        var linq = typeof(Enumerable)
-                .GetTypeInfo()
-                .Assembly;
-
-        var scriptOpts = ScriptOptions.Default;
-
-        scriptOpts = scriptOpts.AddReferences(mscorlib);
-        scriptOpts = scriptOpts.AddReferences(linq);
-
-        // using
-        scriptOpts = scriptOpts
-            .AddImports("System")
-            .AddImports("System.Linq")
-            .AddImports("System.Collections.Generic")
-            .AddImports("System.Threading.Tasks");
-
-        var result = CSharpScript
-            .EvaluateAsync<dynamic>(
-                code,
-                scriptOpts)
-            .Result;
-
         config
             .Clients
             .Clear();
 
-        foreach (var d in result)
+        foreach (var d in statements.ToClientsDefinition())
         {
             config
                 .Clients
