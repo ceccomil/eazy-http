@@ -102,7 +102,7 @@ public class GeneratorTests
             })
             """);
 
-        var codeGen = new CodeGenerator();
+        var codeGen = new IncrementalGenerator();
         var driver = CSharpGeneratorDriver
             .Create(codeGen);
 

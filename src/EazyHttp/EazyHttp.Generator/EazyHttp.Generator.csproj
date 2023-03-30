@@ -18,6 +18,8 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <NodeReuse>false</NodeReuse>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +27,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,7 +3,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <PackageVersion>2.5.0</PackageVersion>
+    <PackageVersion>2.6.1</PackageVersion>
     <Authors>Chekko Milani</Authors>
   </PropertyGroup>
 </Project>
