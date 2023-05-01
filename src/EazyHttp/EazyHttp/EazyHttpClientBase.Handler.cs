@@ -79,8 +79,18 @@ public abstract partial class EazyHttpClientBase
                 additionalHeaders,
                 cancellationToken);
 
-        ResponseCode = (int)response.StatusCode;
+        ResponseCode = (int)response
+            .StatusCode;
+
         ResponseStatus = $"{response.StatusCode}";
+
+        ResponseContentType = response
+            .Headers
+            .ContentType;
+
+        ResponseContentDisposition = response
+            .Headers
+            .ContentDisposition;
 
         return response;
     }
@@ -105,6 +115,7 @@ public abstract partial class EazyHttpClientBase
         try
         {
             var buffer = new byte[stream.Length];
+
             await stream
                 .ReadAsync(
                     buffer,

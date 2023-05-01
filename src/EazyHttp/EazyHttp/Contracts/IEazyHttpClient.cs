@@ -19,6 +19,21 @@ public interface IEazyHttpClient
     string ResponseStatus { get; }
 
     /// <summary>
+    /// If available, gets the content type header of the last HTTP request
+    /// </summary>
+    MediaTypeHeaderValue? ResponseContentType { get; }
+
+    /// <summary>
+    /// Gets the content type header's string representation of the last HTTP request
+    /// </summary>
+    string ResponseContentTypeDescription { get; }
+
+    /// <summary>
+    /// If available, gets the content disposition header of the last HTTP request
+    /// </summary>
+    ContentDispositionHeaderValue? ResponseContentDisposition { get; }
+
+    /// <summary>
     /// Send a GET request and returns a deserialized <typeparamref name="TResult"/>.
     /// </summary>
     /// <returns>A <typeparamref name="TResult"/>.</returns>

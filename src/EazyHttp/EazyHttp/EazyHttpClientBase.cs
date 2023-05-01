@@ -19,6 +19,25 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
     public string ResponseStatus { get; private set; } = "Unknown";
 
     /// <inheritdoc/>
+    public MediaTypeHeaderValue? ResponseContentType { get; private set; }
+
+    /// <inheritdoc/>
+    public string ResponseContentTypeDescription {
+        get {
+            if (ResponseContentType is null)
+            {
+                return "Unknown";
+            }
+
+            return ResponseContentType
+                .ToString();
+        }
+    }
+
+    /// <inheritdoc/>
+    public ContentDispositionHeaderValue? ResponseContentDisposition { get; private set; }
+
+    /// <inheritdoc/>
     public HttpRequestHeaders Headers => HttpClient
             .DefaultRequestHeaders;
 
@@ -109,7 +128,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         HttpQuery? query = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
-        CancellationToken cancellationToken = default) => 
+        CancellationToken cancellationToken = default) =>
         await HttpAsync(
             async (url, content) => await HttpClient
                 .GetAsync(url, cancellationToken),
@@ -153,7 +172,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
-        CancellationToken cancellationToken = default) => 
+        CancellationToken cancellationToken = default) =>
         await HttpAsync(
             async (url, content) =>
             {
