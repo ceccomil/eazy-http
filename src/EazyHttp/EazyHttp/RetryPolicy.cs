@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-
-namespace EazyHttp;
+﻿namespace EazyHttp;
 
 internal class RetryPolicy
 {
@@ -48,7 +45,7 @@ internal class RetryPolicy
             reqId,
             new());
 
-        HttpSend:
+    HttpSend:
         attempts++;
 
         _httpClient
@@ -112,6 +109,9 @@ internal class RetryPolicy
         var exceptions = _jitters[reqId]
             .FailedRequests;
 
+        var respContent = _enc
+            .GetString(buffer);
+
         exceptions
             .Add(
                 new FailedRequestException(
@@ -120,7 +120,8 @@ internal class RetryPolicy
                     $"{DateTime.UtcNow} Request did not succeed ({url}" +
                     $") [{httpMethod} {(int)rc.StatusCode}]" +
                     $" {rc.StatusCode}, result:" +
-                    $"\r\n{_enc.GetString(buffer)}"));
+                    $"\r\n{respContent}",
+                    respContent));
 
         if (attempts >= _conf.MaxAttempts ||
             !_conf.StatusCodeMatchingCondition(

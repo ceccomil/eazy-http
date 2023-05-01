@@ -11,6 +11,11 @@ public class FailedRequestException : Exception
     /// <inheritdoc/>
     public HttpMethod Method { get; }
 
+    /// <summary>
+    /// Returns the raw response string content
+    /// </summary>
+    public string ResponseContent { get; }
+
     internal FailedRequestException(
         HttpStatusCode statusCode,
         HttpMethod method) : this(
@@ -33,11 +38,28 @@ public class FailedRequestException : Exception
         HttpStatusCode statusCode,
         HttpMethod method,
         string? message,
+        string? responseContent) : this(
+            statusCode,
+            method,
+            message,
+            responseContent,
+            null)
+    { }
+
+    internal FailedRequestException(
+        HttpStatusCode statusCode,
+        HttpMethod method,
+        string? message,
+        string? responseContent,
         Exception? innerException) : base(
             message,
             innerException)
     {
         StatusCode = statusCode;
         Method = method;
+
+        responseContent ??= "";
+
+        ResponseContent = responseContent;
     }
 }
