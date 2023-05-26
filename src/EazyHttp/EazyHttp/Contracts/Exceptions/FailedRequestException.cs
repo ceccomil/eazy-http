@@ -16,7 +16,10 @@ public class FailedRequestException : Exception
     /// </summary>
     public string ResponseContent { get; }
 
-    internal FailedRequestException(
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FailedRequestException"/>
+    /// </summary>
+    public FailedRequestException(
         HttpStatusCode statusCode,
         HttpMethod method) : this(
             statusCode,
@@ -24,7 +27,10 @@ public class FailedRequestException : Exception
             null)
     { }
 
-    internal FailedRequestException(
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FailedRequestException"/>
+    /// </summary>
+    public FailedRequestException(
         HttpStatusCode statusCode,
         HttpMethod method,
         string? message) : this(
@@ -34,7 +40,10 @@ public class FailedRequestException : Exception
             null)
     { }
 
-    internal FailedRequestException(
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FailedRequestException"/>
+    /// </summary>
+    public FailedRequestException(
         HttpStatusCode statusCode,
         HttpMethod method,
         string? message,
@@ -46,7 +55,10 @@ public class FailedRequestException : Exception
             null)
     { }
 
-    internal FailedRequestException(
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FailedRequestException"/>
+    /// </summary>
+    public FailedRequestException(
         HttpStatusCode statusCode,
         HttpMethod method,
         string? message,
