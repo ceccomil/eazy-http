@@ -72,7 +72,8 @@ internal static class Compilations
                     emitResult.Diagnostics));
         }
 
-        var assembly = Assembly
+        var assembly = AppDomain
+            .CurrentDomain
             .Load(ms.ToArray());
 
         var type = assembly
@@ -82,7 +83,7 @@ internal static class Compilations
             "Get");
 
         var result = method.Invoke(
-            null, 
+            null,
             Array.Empty<object>());
 
         return $"{result}";
@@ -98,7 +99,7 @@ internal static class Compilations
                 "-",
                 "");
 
-        var code = 
+        var code =
             $$"""
             using System;
             using System.Collections.Generic;
@@ -108,11 +109,11 @@ internal static class Compilations
                 public class Definition
                 {
                     public string Name { get; }
-                    public string BaseAddress { get; }
+                    public string? BaseAddress { get; }
 
                     public Definition(
                     string name,
-                    string baseAddress)
+                    string? baseAddress = default)
                     {
                         Name = name;
                         BaseAddress = baseAddress;
@@ -147,7 +148,8 @@ internal static class Compilations
                     emitResult.Diagnostics));
         }
 
-        var assembly = Assembly
+        var assembly = AppDomain
+            .CurrentDomain
             .Load(ms.ToArray());
 
         var type = assembly
@@ -158,7 +160,7 @@ internal static class Compilations
 
         var result = method.Invoke(
             null,
-            Array.Empty<object>()) 
+            Array.Empty<object>())
             as IEnumerable<dynamic>;
 
         return result!;

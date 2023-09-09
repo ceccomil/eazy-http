@@ -60,9 +60,10 @@ internal static class StatementsExtensions
 
     public static string FlattenLine(
         this string statement) => statement
-            .Replace(" ", "")
             .Replace("\r", "")
-            .Replace("\n", "");
+            .Replace("\n", "")
+            .Replace("HttpClientDefinition", "")
+            .Replace(" ", "");
 
     public static string FlattenLine(
         this ExpressionStatementSyntax statement) => $"{statement}"

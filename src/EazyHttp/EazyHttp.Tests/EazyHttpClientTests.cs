@@ -1,6 +1,4 @@
-﻿using EazyHttp.Contracts.Exceptions;
-
-namespace EazyHttp.Tests;
+﻿namespace EazyHttp.Tests;
 
 [Collection("EazyHttpClient Tests")]
 public class EazyHttpClientTests
@@ -30,7 +28,7 @@ public class EazyHttpClientTests
             AutomaticDecompression = DecompressionMethods.GZip;
         }
     }
-    
+
     public class TestResponse
     {
         public string? Result { get; set; }
@@ -138,7 +136,7 @@ public class EazyHttpClientTests
     {
         // Arrange
         DefaultSetup();
-    
+
         // Act
         var testResponse = await _httpClient
             .GetAsync<TestResponse>(
@@ -203,7 +201,7 @@ public class EazyHttpClientTests
                     "/test",
                     _query,
                     cancellationToken: _token);
-            }); 
+            });
 
         // Assert
         ex
@@ -238,13 +236,13 @@ public class EazyHttpClientTests
             .Should()
             .Be("OK");
 
-       _httpClient
-            .Headers
-            .Any()
-            .Should()
-            .BeFalse(
-                because: "All temporary headers (including auth)" +
-                " have been removed after the request!");
+        _httpClient
+             .Headers
+             .Any()
+             .Should()
+             .BeFalse(
+                 because: "All temporary headers (including auth)" +
+                 " have been removed after the request!");
     }
 
     [Fact]

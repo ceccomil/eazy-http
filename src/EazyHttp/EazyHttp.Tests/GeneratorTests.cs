@@ -22,85 +22,119 @@ public class GeneratorTests
                     OutputKind
                     .ConsoleApplication));
 
-    [Fact]
-    public void Generator_when_working()
+    [Theory]
+    //[InlineData("""
+    //    services
+    //    .ConfigureEazyHttpClients(opts =>
+    //    {
+    //        opts
+    //            .NameSpacePrefix = 
+    //                "DataDog";
+
+    //        opts
+    //            .EazyHttpClients
+    //            .Add(new(
+    //                "DataDogLogs",
+    //                Gpm
+    //                .Core
+    //                .Logging
+    //                .LoggerExtensions
+    //                .DataDogIntakeUrl));
+
+    //        opts
+    //            .PersistentHeaders
+    //            .Add(
+    //                "DataDogLogs",
+    //                new RequestHeader[]
+    //                {
+    //            new(
+    //                HeaderNames.Accept,
+    //                "application/json"),
+    //            new(
+    //                "DD-API-KEY",
+    //                dataDogApiKey)
+    //                });
+
+    //        opts
+    //            .SerializersOptions
+    //            .Add(
+    //                "DataDogLogs",
+    //                new(
+    //                    JsonSerializerDefaults.Web)
+    //                {
+    //                    PropertyNamingPolicy = JsonNamingPolicy
+    //                        .CamelCase,
+
+    //                    WriteIndented = false,
+
+    //                    DefaultIgnoreCondition = JsonIgnoreCondition
+    //                        .WhenWritingNull
+    //                });
+
+    //        opts
+    //            .Retries
+    //            .Add(
+    //                "DataDogLogs",
+    //                new()
+    //                {
+    //                    MaxAttempts = 4,
+    //                    StatusCodeMatchingCondition = (code, method) =>
+    //                    {
+    //                        if (method != HttpMethod.Post)
+    //                        {
+    //                            return false;
+    //                        }
+
+    //                        if (code is HttpStatusCode.ServiceUnavailable
+    //                            or HttpStatusCode.GatewayTimeout
+    //                            or HttpStatusCode.RequestTimeout)
+    //                        {
+    //                            return true;
+    //                        }
+
+    //                        return false;
+    //                    }
+    //                });
+    //    })
+    //    """)]
+    [InlineData("""
+        services
+        .ConfigureEazyHttpClients(opts =>
+        {        
+            opts
+                .EazyHttpClients.Add(new HttpClientDefinition(
+                    "DataDogLogs",
+                    "https://http-intake.logs.datadoghq.eu/api/v2"));
+        
+        })
+        """)]
+    [InlineData("""
+        services
+        .ConfigureEazyHttpClients(opts =>
+        {        
+            opts
+                .EazyHttpClients.Add(new(
+                    "DataDogLogs",
+                    "https://http-intake.logs.datadoghq.eu/api/v2"));
+        
+        })
+        """)]
+    [InlineData("""
+        services
+        .ConfigureEazyHttpClients(opts =>
+        {        
+            opts
+                .EazyHttpClients.Add(new HttpClientDefinition(
+                    "NoBaseAddress"));
+        
+        })
+        """)]
+    public void Generator_when_is_expected_to_work(
+        string code)
     {
         // Arrange
         var inputClass = CreateCompilation(
-            """
-            services
-            .ConfigureEazyHttpClients(opts =>
-            {
-                opts
-                    .NameSpacePrefix = 
-                        "DataDog";
-
-                opts
-                    .EazyHttpClients
-                    .Add(new(
-                        "DataDogLogs",
-                        Gpm
-                        .Core
-                        .Logging
-                        .LoggerExtensions
-                        .DataDogIntakeUrl));
-
-                opts
-                    .PersistentHeaders
-                    .Add(
-                        "DataDogLogs",
-                        new RequestHeader[]
-                        {
-                    new(
-                        HeaderNames.Accept,
-                        "application/json"),
-                    new(
-                        "DD-API-KEY",
-                        dataDogApiKey)
-                        });
-
-                opts
-                    .SerializersOptions
-                    .Add(
-                        "DataDogLogs",
-                        new(
-                            JsonSerializerDefaults.Web)
-                        {
-                            PropertyNamingPolicy = JsonNamingPolicy
-                                .CamelCase,
-
-                            WriteIndented = false,
-
-                            DefaultIgnoreCondition = JsonIgnoreCondition
-                                .WhenWritingNull
-                        });
-
-                opts
-                    .Retries
-                    .Add(
-                        "DataDogLogs",
-                        new()
-                        {
-                            MaxAttempts = 4,
-                            StatusCodeMatchingCondition = (code, method) =>
-                            {
-                                if (method != HttpMethod.Post)
-                                {
-                                    return false;
-                                }
-
-                                if (code is HttpStatusCode.ServiceUnavailable
-                                    or HttpStatusCode.GatewayTimeout
-                                    or HttpStatusCode.RequestTimeout)
-                                {
-                                    return true;
-                                }
-
-                                return false;
-                            }
-                        });
-            })
-            """);
+            code);
 
         var codeGen = new IncrementalGenerator();
         var driver = CSharpGeneratorDriver
