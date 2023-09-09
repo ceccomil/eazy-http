@@ -8,9 +8,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="CaptainLogger" Version="2.5.1" />
-    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="2.5.1" />
-    <PackageReference Include="EazyHttp" Version="2.7.5" PrivateAssets="All" />
+    <PackageReference Include="CaptainLogger" Version="2.5.2" />
+    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="2.5.2" />
+    <PackageReference Include="EazyHttp" Version="2.7.6" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
   </ItemGroup>
 
