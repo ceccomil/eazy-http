@@ -2,7 +2,7 @@
 
 internal class RetryPolicy
 {
-    private readonly Dictionary<Guid, Jitter> _jitters = new();
+    private readonly Dictionary<Guid, Jitter> _jitters = [];
     private readonly RetryConfiguration _conf;
     private readonly Random _random = new();
     private readonly HttpClient _httpClient;

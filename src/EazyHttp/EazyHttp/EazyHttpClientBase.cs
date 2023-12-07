@@ -12,34 +12,40 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
     /// <inheritdoc/>
     public HttpClient HttpClient { get; }
 
-    /// <inheritdoc/>
-    public int ResponseCode { get; private set; }
+    /// <summary>
+    /// Latest response results.
+    /// </summary>
+    public ResponseResultsCollection ResponseResults { get; } = [];
 
     /// <inheritdoc/>
-    public string ResponseStatus { get; private set; } = "Unknown";
+    public int ResponseCode => ResponseResults
+        .Last?
+        .ResponseCode
+        ?? 0;
 
     /// <inheritdoc/>
-    public MediaTypeHeaderValue? ResponseContentType { get; private set; }
+    public string ResponseStatus => ResponseResults
+        .Last?
+        .ResponseStatus
+        ?? "Unknown";
 
     /// <inheritdoc/>
-    public string ResponseContentTypeDescription {
-        get {
-            if (ResponseContentType is null)
-            {
-                return "Unknown";
-            }
-
-            return ResponseContentType
-                .ToString();
-        }
-    }
+    public MediaTypeHeaderValue? ResponseContentType => ResponseResults
+        .Last?
+        .ResponseContentType;
 
     /// <inheritdoc/>
-    public ContentDispositionHeaderValue? ResponseContentDisposition { get; private set; }
+    public string ResponseContentTypeDescription => ResponseResults
+        .Last?
+        .ResponseContentTypeDescription
+        ?? "Unknown";
+
+    /// <inheritdoc/>
+    public ContentDispositionHeaderValue? ResponseContentDisposition => throw new NotImplementedException();
 
     /// <inheritdoc/>
     public HttpRequestHeaders Headers => HttpClient
-            .DefaultRequestHeaders;
+        .DefaultRequestHeaders;
 
     /// <summary>
     /// Base constructor
@@ -55,23 +61,22 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
 
         if (options.Value
             .PersistentHeaders
-            .ContainsKey(name))
+            .TryGetValue(name,
+            out var headValue))
         {
             HttpClient
-                .AddHeaders(
-                    options.Value
-                    .PersistentHeaders[name]);
+            .AddHeaders(
+                headValue);
         }
 
         _enc = Encoding.UTF8;
 
         if (options.Value
             .Encodings
-            .ContainsKey(name))
+            .TryGetValue(name,
+            out var encValue))
         {
-            _enc = options
-                .Value
-                .Encodings[name];
+            _enc = encValue;
         }
 
         _serializer = new(
@@ -80,11 +85,10 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
 
         if (options.Value
             .SerializersOptions
-            .ContainsKey(name))
+            .TryGetValue(name,
+            out var serValue))
         {
-            _serializer = options
-                .Value
-                .SerializersOptions[name];
+            _serializer = serValue;
         }
 
         _retryPolicy = new(
@@ -93,14 +97,13 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
 
         if (options.Value
             .Retries
-            .ContainsKey(name))
+            .TryGetValue(name,
+            out var retValue))
         {
             _retryPolicy = new(
                 HttpClient,
                 _enc,
-                options
-                    .Value
-                    .Retries[name]);
+                retValue);
         }
     }
 

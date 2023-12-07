@@ -20,7 +20,7 @@ csharp_new_line_before_members_in_anonymous_types = true
 #require members of object intializers to be on separate lines
 csharp_new_line_before_members_in_object_initializers = true
 #require braces to be on a new line for lambdas, object_collection_array_initializers, methods, control_blocks, and types (also known as "Allman" style)
-csharp_new_line_before_open_brace = lambdas, object_collection_array_initializers, methods, control_blocks, types
+csharp_new_line_before_open_brace = all
 
 #Formatting - spacing options
 
@@ -133,6 +133,10 @@ csharp_style_expression_bodied_local_functions = false:silent
 csharp_style_throw_expression = true:suggestion
 csharp_style_prefer_null_check_over_type_check = true:suggestion
 csharp_style_prefer_local_over_anonymous_function = true:suggestion
+csharp_style_prefer_method_group_conversion = true:silent
+csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_style_prefer_index_operator = true:suggestion
 
 [*.{cs,vb}]
 dotnet_style_prefer_auto_properties= true:suggestion
@@ -203,3 +207,4 @@ dotnet_naming_style.pascal_case.required_prefix =
 dotnet_naming_style.pascal_case.required_suffix = 
 dotnet_naming_style.pascal_case.word_separator = 
 dotnet_naming_style.pascal_case.capitalization = pascal_case
+dotnet_style_prefer_collection_expression = true:suggestion
