@@ -9,6 +9,11 @@ public interface IEazyHttpClient
     HttpClient HttpClient { get; }
 
     /// <summary>
+    /// Latest response results.
+    /// </summary>
+    public ResponseResultsCollection ResponseResults { get; }
+
+    /// <summary>
     /// Gets the status code of the last HTTP request 
     /// </summary>
     int ResponseCode { get; }

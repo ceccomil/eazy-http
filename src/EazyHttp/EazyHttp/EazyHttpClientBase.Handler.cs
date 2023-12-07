@@ -79,18 +79,18 @@ public abstract partial class EazyHttpClientBase
                 additionalHeaders,
                 cancellationToken);
 
-        ResponseCode = (int)response
-            .StatusCode;
-
-        ResponseStatus = $"{response.StatusCode}";
-
-        ResponseContentType = response
-            .Headers
-            .ContentType;
-
-        ResponseContentDisposition = response
-            .Headers
-            .ContentDisposition;
+        ResponseResults.Add(new()
+        {
+            ResponseCode = (int)response
+                .StatusCode,
+            ResponseStatus = $"{response.StatusCode}",
+            ResponseContentType = response
+                .Headers
+                .ContentType,
+            ResponseContentDisposition = response
+                .Headers
+                .ContentDisposition
+        });
 
         return response;
     }
@@ -152,7 +152,7 @@ public abstract partial class EazyHttpClientBase
             .ToString()
             ?? string.Empty;
 
-        while (url.EndsWith("/"))
+        while (url.EndsWith('/'))
         {
             url = url.Remove(url.Length - 1);
         }
@@ -167,7 +167,7 @@ public abstract partial class EazyHttpClientBase
             url = string.Empty;
         }
 
-        while (route.StartsWith("/"))
+        while (route.StartsWith('/'))
         {
             route = route[1..];
         }

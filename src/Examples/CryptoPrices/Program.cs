@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using EazyHttp;
-using EazyHttp.HttpClients;
-using CaptainLogger;
+﻿using CaptainLogger;
 using CaptainLogger.Options;
-using Microsoft.Extensions.Logging;
-using EazyHttp.Contracts;
 using CryptoPrices;
+using EazyHttp;
+using EazyHttp.Contracts;
+using EazyHttp.HttpClients;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 var services = new ServiceCollection()
     .ConfigureEazyHttpClients(opts =>
@@ -51,7 +51,7 @@ var services = new ServiceCollection()
             .AddCaptainLogger()
             .AddFilter(
                 "",
-                LogLevel.Information);
+                LogLevel.Debug);
     });
 
 
@@ -114,3 +114,28 @@ logger
         "Min valued",
         min.Slug,
         min.Metrics.MarketData.PriceUsd);
+
+for (var i = 0; i < 14; i++)
+{
+    _ = coinClient
+        .GetAsync<ResultDto>(
+        "assets",
+        query);
+}
+
+logger
+    .DebugLog(
+    "Waiting for all responses" +
+    $" currently {coinClient
+        .ResponseResults
+        .Count}");
+
+await Task
+    .Delay(10_000);
+
+logger
+    .DebugLog(
+    "All responses" +
+    $" {coinClient
+        .ResponseResults
+        .Count}");
