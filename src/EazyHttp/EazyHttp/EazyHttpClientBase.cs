@@ -113,6 +113,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         HttpQuery? query = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
         where TResult : class => await HttpAsync<TResult>(
             async (url, content) => await HttpClient
@@ -123,6 +124,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body: null,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -131,6 +133,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         HttpQuery? query = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) =>
         await HttpAsync(
             async (url, content) => await HttpClient
@@ -141,6 +144,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body: null,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -149,6 +153,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
         where TResult : class => await HttpAsync<TResult>(
             async (url, content) =>
@@ -167,6 +172,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -175,6 +181,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) =>
         await HttpAsync(
             async (url, content) =>
@@ -193,6 +200,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -201,6 +209,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
         where TResult : class => await HttpAsync<TResult>(
             async (url, content) =>
@@ -219,6 +228,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -227,6 +237,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) =>
         await HttpAsync(
             async (url, content) =>
@@ -245,6 +256,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -253,6 +265,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         HttpQuery? query = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
         where TResult : class => await HttpAsync<TResult>(
             async (url, content) => await HttpClient
@@ -263,6 +276,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body: null,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -271,6 +285,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         HttpQuery? query = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) =>
         await HttpAsync(
             async (url, content) => await HttpClient
@@ -281,6 +296,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body: null,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -289,6 +305,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
         where TResult : class => await HttpAsync<TResult>(
             async (url, content) =>
@@ -307,6 +324,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -315,6 +333,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) =>
         await HttpAsync(
             async (url, content) =>
@@ -333,6 +352,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
     /// <inheritdoc/>
@@ -341,6 +361,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         IEnumerable<FormElement> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
         where TResult : class
     {
@@ -378,6 +399,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body: null,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
     }
 
@@ -387,6 +409,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         IEnumerable<FormElement> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
     {
         var form = new MultipartFormDataContent();
@@ -423,6 +446,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body: null,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
     }
 
@@ -432,6 +456,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         IEnumerable<KeyValuePair<string, string?>> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
         where TResult : class
     {
@@ -452,6 +477,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body: null,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
     }
 
@@ -461,6 +487,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         IEnumerable<KeyValuePair<string, string?>> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
     {
         var form = new FormUrlEncodedContent(
@@ -480,6 +507,7 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
             body: null,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
     }
 
