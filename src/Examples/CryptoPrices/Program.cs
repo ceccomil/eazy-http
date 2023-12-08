@@ -117,10 +117,15 @@ logger
 
 for (var i = 0; i < 14; i++)
 {
+    var guid = Guid.Parse(
+        "10000000-0001-0001-" +
+        $"0001-0000000000{i:00}");
+
     _ = coinClient
         .GetAsync<ResultDto>(
         "assets",
-        query);
+        query,
+        requestId: guid);
 }
 
 logger
@@ -139,3 +144,9 @@ logger
     $" {coinClient
         .ResponseResults
         .Count}");
+
+foreach (var r in coinClient.ResponseResults)
+{
+    logger.DebugLog(
+        $"{r.ResponseTime:mm:ss.fff} -> {r.Id}");
+}

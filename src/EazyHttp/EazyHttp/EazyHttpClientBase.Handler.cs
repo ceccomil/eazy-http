@@ -12,6 +12,7 @@ public abstract partial class EazyHttpClientBase
         object? body = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) where TResult : class
     {
         using var response = await HttpResponseAsync(
@@ -22,6 +23,7 @@ public abstract partial class EazyHttpClientBase
             body,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
 
         return await DeserializeOrGetBytes<TResult>(
@@ -38,6 +40,7 @@ public abstract partial class EazyHttpClientBase
         object? body = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
     {
         using var response = await HttpResponseAsync(
@@ -48,6 +51,7 @@ public abstract partial class EazyHttpClientBase
             body,
             authHeader,
             additionalHeaders,
+            requestId,
             cancellationToken);
     }
 
@@ -59,6 +63,7 @@ public abstract partial class EazyHttpClientBase
         object? body = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default)
     {
         var url = CombineUrl(route, query);
@@ -79,18 +84,19 @@ public abstract partial class EazyHttpClientBase
                 additionalHeaders,
                 cancellationToken);
 
-        ResponseResults.Add(new()
-        {
-            ResponseCode = (int)response
-                .StatusCode,
-            ResponseStatus = $"{response.StatusCode}",
-            ResponseContentType = response
-                .Headers
-                .ContentType,
-            ResponseContentDisposition = response
-                .Headers
-                .ContentDisposition
-        });
+        ResponseResults
+            .Add(new(requestId)
+            {
+                ResponseCode = (int)response
+                    .StatusCode,
+                ResponseStatus = $"{response.StatusCode}",
+                ResponseContentType = response
+                    .Headers
+                    .ContentType,
+                ResponseContentDisposition = response
+                    .Headers
+                    .ContentDisposition
+            });
 
         return response;
     }

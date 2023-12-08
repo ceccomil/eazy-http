@@ -46,6 +46,7 @@ public interface IEazyHttpClient
     /// <param name="query">Optional query parameters.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -60,6 +61,7 @@ public interface IEazyHttpClient
         HttpQuery? query = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
@@ -69,6 +71,7 @@ public interface IEazyHttpClient
     /// <param name="query">Optional query parameters.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -83,6 +86,7 @@ public interface IEazyHttpClient
         HttpQuery? query = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -93,6 +97,7 @@ public interface IEazyHttpClient
     /// <param name="body">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -107,6 +112,7 @@ public interface IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
@@ -116,6 +122,7 @@ public interface IEazyHttpClient
     /// <param name="body">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -130,6 +137,7 @@ public interface IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -140,6 +148,7 @@ public interface IEazyHttpClient
     /// <param name="body">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -154,6 +163,7 @@ public interface IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
@@ -163,6 +173,7 @@ public interface IEazyHttpClient
     /// <param name="body">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -177,6 +188,7 @@ public interface IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default);
 
 
@@ -188,6 +200,7 @@ public interface IEazyHttpClient
     /// <param name="query">Optional query parameters.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -202,6 +215,7 @@ public interface IEazyHttpClient
         HttpQuery? query = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
@@ -211,6 +225,7 @@ public interface IEazyHttpClient
     /// <param name="query">Optional query parameters.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -225,6 +240,7 @@ public interface IEazyHttpClient
         HttpQuery? query = default,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -235,6 +251,7 @@ public interface IEazyHttpClient
     /// <param name="body">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -249,6 +266,7 @@ public interface IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
@@ -258,6 +276,7 @@ public interface IEazyHttpClient
     /// <param name="body">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -272,6 +291,7 @@ public interface IEazyHttpClient
         object body,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -282,6 +302,7 @@ public interface IEazyHttpClient
     /// <param name="elements">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -296,6 +317,7 @@ public interface IEazyHttpClient
         IEnumerable<FormElement> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
@@ -305,6 +327,7 @@ public interface IEazyHttpClient
     /// <param name="elements">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -319,6 +342,7 @@ public interface IEazyHttpClient
         IEnumerable<FormElement> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -329,6 +353,7 @@ public interface IEazyHttpClient
     /// <param name="elements">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -343,6 +368,7 @@ public interface IEazyHttpClient
         IEnumerable<KeyValuePair<string, string?>> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default) where TResult : class;
 
     /// <summary>
@@ -352,6 +378,7 @@ public interface IEazyHttpClient
     /// <param name="elements">The body of the request.</param>
     /// <param name="authHeader">Optional authentication header.</param>
     /// <param name="additionalHeaders">Optional collection of headers added to the request.</param>
+    /// <param name="requestId">Optional request identifier.</param>
     /// <param name="cancellationToken">
     /// The cancellation token that can be used to cancel the operation.
     /// </param>
@@ -366,5 +393,6 @@ public interface IEazyHttpClient
         IEnumerable<KeyValuePair<string, string?>> elements,
         AuthenticationHeaderValue? authHeader = default,
         IEnumerable<RequestHeader>? additionalHeaders = default,
+        Guid? requestId = default,
         CancellationToken cancellationToken = default);
 }

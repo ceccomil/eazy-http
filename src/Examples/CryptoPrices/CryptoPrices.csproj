@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="CaptainLogger" Version="3.0.1" />
     <PackageReference Include="CaptainLogger.Extensions.Generator" Version="3.0.1" />
-    <PackageReference Include="EazyHttp" Version="3.0.2" PrivateAssets="All" />
+    <PackageReference Include="EazyHttp" Version="3.0.3" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
   </ItemGroup>
 
