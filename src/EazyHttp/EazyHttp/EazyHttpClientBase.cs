@@ -41,7 +41,9 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         ?? "Unknown";
 
     /// <inheritdoc/>
-    public ContentDispositionHeaderValue? ResponseContentDisposition => throw new NotImplementedException();
+    public ContentDispositionHeaderValue? ResponseContentDisposition => ResponseResults
+        .Last?
+        .ResponseContentDisposition;
 
     /// <inheritdoc/>
     public HttpRequestHeaders Headers => HttpClient
