@@ -105,11 +105,11 @@ public abstract partial class EazyHttpClientBase
         HttpContentHeaders headers,
         Stream stream,
         CancellationToken cancellationToken)
+        where TResult : class
     {
-
         if (headers.Contains("Content-Type") &&
             headers.GetValues("Content-Type")
-                .Any(x => x.Contains("application/json")))
+            .Any(x => x.Contains("application/json")))
         {
             return await JsonSerializer
                 .DeserializeAsync<TResult>(
@@ -120,33 +120,64 @@ public abstract partial class EazyHttpClientBase
 
         try
         {
-            var buffer = new byte[stream.Length];
-
-            await stream
-                .ReadAsync(
-                    buffer,
-                    cancellationToken);
-
-            if (typeof(TResult) == typeof(string))
+            if (typeof(TResult) == typeof(Stream))
             {
-                return (TResult?)Convert
-                .ChangeType(
-                    _enc.GetString(buffer),
-                    typeof(TResult?));
+                return await GetStream<TResult>(
+                    stream,
+                    cancellationToken);
             }
 
-            return (TResult?)Convert
-                .ChangeType(
-                    buffer,
-                    typeof(TResult?));
+            return await GetStringOrBytes<TResult>(
+                stream,
+                cancellationToken);
         }
         catch (Exception ex)
         {
             throw new ByteArrayExpectedException(
-                "Response content type is not a valid " +
-                "JSON. A byte array TResult was expected!",
+                "Response content type is not a valid JSON. " +
+                $"A `{nameof(String)}` or a `{nameof(Byte)}[]`" +
+                $" or a `{nameof(Stream)}` was expected! " +
+                "Check the inner exception for details!",
                 ex);
         }
+    }
+
+    private static async Task<TResult?> GetStream<TResult>(
+        Stream stream,
+        CancellationToken cancellationToken)
+        where TResult : class
+    {
+        var ms = new MemoryStream();
+        await stream.CopyToAsync(
+            ms,
+            cancellationToken);
+
+        return ms as TResult;
+    }
+
+    private async Task<TResult?> GetStringOrBytes<TResult>(
+        Stream stream,
+        CancellationToken cancellationToken)
+        where TResult : class
+    {
+        var buffer = new byte[stream.Length];
+
+        await stream.ReadAsync(
+            buffer,
+            cancellationToken);
+
+        if (typeof(TResult) == typeof(string))
+        {
+            return (TResult?)Convert
+                .ChangeType(
+                    _enc.GetString(buffer),
+                    typeof(TResult));
+        }
+
+        return (TResult?)Convert
+            .ChangeType(
+                buffer,
+                typeof(TResult));
     }
 
     private string CombineUrl(
