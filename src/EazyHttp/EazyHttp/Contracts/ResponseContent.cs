@@ -1,25 +1,17 @@
 ﻿namespace EazyHttp.Contracts;
 
-internal class ResponseContent : IDisposable
+internal class ResponseContent(
+    HttpResponseMessage _response,
+    Stream _content) : IDisposable
 {
     public HttpStatusCode StatusCode => _response.StatusCode;
-    public Stream Content { get; }
-    public HttpContentHeaders Headers { get; }
+    public Stream Content { get; } = _content;
+    public HttpContentHeaders Headers { get; } = _response
+            .Content
+            .Headers;
     public bool IsSuccess => _response.IsSuccessStatusCode;
 
     private bool _disposed;
-    private readonly HttpResponseMessage _response;
-
-    public ResponseContent(
-        HttpResponseMessage response,
-        Stream content)
-    {
-        _response = response;
-        Content = content;
-        Headers = response
-            .Content
-            .Headers;
-    }
 
     ~ResponseContent() => Dispose(false);
 

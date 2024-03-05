@@ -45,6 +45,13 @@ public abstract partial class EazyHttpClientBase : IEazyHttpClient
         .Last?
         .ResponseContentDisposition;
 
+    /// <summary>
+    /// The collection of headers included in the response.
+    /// </summary>
+    public HttpContentHeaders? ResponseHeaders => ResponseResults
+        .Last?
+        .ResponseHeaders;
+
     /// <inheritdoc/>
     public HttpRequestHeaders Headers => HttpClient
         .DefaultRequestHeaders;

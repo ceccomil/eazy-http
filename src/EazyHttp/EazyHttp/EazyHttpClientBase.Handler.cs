@@ -95,7 +95,9 @@ public abstract partial class EazyHttpClientBase
                     .ContentType,
                 ResponseContentDisposition = response
                     .Headers
-                    .ContentDisposition
+                    .ContentDisposition,
+                ResponseHeaders = response
+                    .Headers
             });
 
         return response;

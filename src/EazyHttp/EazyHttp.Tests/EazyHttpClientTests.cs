@@ -7,7 +7,7 @@ public class EazyHttpClientTests
     private readonly Mock<IOptions<EazyClientOptions>> _optionsMock = new();
     private readonly CancellationToken _token = CancellationToken.None;
     private readonly HttpQuery _query = new();
-    private readonly Dictionary<string, string> _body = new();
+    private readonly Dictionary<string, string> _body = [];
     private EazyHttpClientBase _httpClient = null!;
 
     public class TestHttpClient : EazyHttpClientBase
@@ -628,5 +628,60 @@ public class EazyHttpClientTests
         result
             .Should()
             .NotBeNullOrEmpty();
+    }
+
+    [Fact]
+    public async Task When_checking_response_headers()
+    {
+        var services = new ServiceCollection()
+            .AddTransient<TestHttpClientHandler>();
+
+        List<KeyValuePair<Guid, string>> requests =
+        [
+            new(Guid.Parse("00000000-0000-0000-0000-000000000001"), "https://www.google.com"),
+            new(Guid.Parse("00000000-0000-0000-0000-000000000002"), "https://www.microsoft.com"),
+            new(Guid.Parse("00000000-0000-0000-0000-000000000003"), "https://www.github.com")
+        ];
+
+        services
+            .AddHttpClient<TestHttpClient>();
+
+        var sp = services
+            .BuildServiceProvider()
+            .CreateScope()
+            .ServiceProvider;
+
+        var client = sp
+            .GetRequiredService<TestHttpClient>();
+
+        List<Task> tasks = [];
+
+        for (var i = 0; i < requests.Count; i++)
+        {
+            tasks.Add(client
+                .GetAsync<string>(
+                    requests[i].Value,
+                    requestId: requests[i].Key));
+        }
+
+        var maxTime = DateTime
+            .UtcNow
+            .AddSeconds(60);
+
+        while (DateTime.UtcNow < maxTime &&
+            client.ResponseResults.Count < requests.Count)
+        {
+            await Task.Delay(50);
+        }
+
+        client
+            .ResponseResults
+            .Count
+            .Should()
+            .Be(requests.Count);
+
+        client
+            .ResponseResults
+            .All(x => x.ResponseHeaders is not null);
     }
 }
