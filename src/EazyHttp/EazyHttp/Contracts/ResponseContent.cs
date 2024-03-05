@@ -6,9 +6,14 @@ internal class ResponseContent(
 {
     public HttpStatusCode StatusCode => _response.StatusCode;
     public Stream Content { get; } = _content;
-    public HttpContentHeaders Headers { get; } = _response
+
+    public HttpContentHeaders ContentHeaders { get; } = _response
             .Content
             .Headers;
+
+    public HttpResponseHeaders Headers { get; } = _response
+        .Headers;
+
     public bool IsSuccess => _response.IsSuccessStatusCode;
 
     private bool _disposed;
