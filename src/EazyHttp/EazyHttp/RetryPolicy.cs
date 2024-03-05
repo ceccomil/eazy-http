@@ -29,7 +29,9 @@ internal class RetryPolicy
         _httpClient = httpClient;
     }
 
-    public async Task<ResponseContent> SendAndRetry(
+    public async Task<(
+            ResponseContent Content,
+            Exception? Failure)> SendAndRetry(
         Func<string, HttpContent?, Task<HttpResponseMessage>> sendAsync,
         HttpMethod httpMethod,
         string url,
@@ -79,9 +81,11 @@ internal class RetryPolicy
                 .ReadAsStreamAsync(
                     cancellationToken));
 
+        Exception? exception = null;
+
         if (!rc.IsSuccess)
         {
-            await HandleFailure(
+            exception = await HandleFailure(
                 rc,
                 httpMethod,
                 attempts,
@@ -89,13 +93,16 @@ internal class RetryPolicy
                 reqId,
                 cancellationToken);
 
-            goto HttpSend;
+            if (exception is null)
+            {
+                goto HttpSend;
+            }
         }
 
-        return rc;
+        return (rc, exception);
     }
 
-    private async Task HandleFailure(
+    private async Task<Exception?> HandleFailure(
         ResponseContent rc,
         HttpMethod httpMethod,
         int attempts,
@@ -141,7 +148,7 @@ internal class RetryPolicy
             _jitters
                 .Remove(reqId);
 
-            throw ex;
+            return ex;
         }
 
         var rng = (_random
@@ -159,5 +166,7 @@ internal class RetryPolicy
         await Task
             .Delay(ts,
             cancellationToken);
+
+        return null;
     }
 }

@@ -633,13 +633,12 @@ public class EazyHttpClientTests
     [Fact]
     public async Task When_checking_response_headers()
     {
-        var services = new ServiceCollection()
-            .AddTransient<TestHttpClientHandler>();
+        var services = new ServiceCollection();
 
         List<KeyValuePair<Guid, string>> requests =
         [
             new(Guid.Parse("00000000-0000-0000-0000-000000000001"), "https://www.google.com"),
-            new(Guid.Parse("00000000-0000-0000-0000-000000000002"), "https://www.microsoft.com"),
+            new(Guid.Parse("00000000-0000-0000-0000-000000000002"), "https://www.nuget.org"),
             new(Guid.Parse("00000000-0000-0000-0000-000000000003"), "https://www.github.com")
         ];
 
@@ -683,5 +682,65 @@ public class EazyHttpClientTests
         client
             .ResponseResults
             .All(x => x.ResponseHeaders is not null);
+    }
+
+    [Fact]
+    public async Task When_checking_response_on_failures()
+    {
+        // Arrange     
+        var services = new ServiceCollection();
+
+        services
+            .Configure<EazyClientOptions>(opts =>
+            {
+                opts.Retries.Add("TestHttpClient", new()
+                {
+                    MaxAttempts = 2,
+                    StatusCodeMatchingCondition = (status, method) =>
+                    {
+                        if (method == HttpMethod.Get &&
+                            status == HttpStatusCode.Unauthorized)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+                });
+            })
+            .AddHttpClient<TestHttpClient>();
+
+        var sp = services
+            .BuildServiceProvider()
+            .CreateScope()
+            .ServiceProvider;
+
+        var client = sp
+            .GetRequiredService<TestHttpClient>();
+
+        Exception error = null!;
+
+        // Act
+        try
+        {
+            _ = await client.GetAsync<object>(
+                "https://api.ote-godaddy.com/v1/domains");
+        }
+        catch (Exception ex)
+        {
+            error = ex;
+        }
+
+        // Assert
+        error
+            .GetType()
+            .Should()
+            .Be<AggregateException>();
+
+        client
+            .ResponseResults
+            .Count
+            .Should()
+            .Be(1);
     }
 }
