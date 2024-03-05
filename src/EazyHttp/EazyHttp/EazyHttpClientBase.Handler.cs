@@ -74,7 +74,7 @@ public abstract partial class EazyHttpClientBase
                 _enc,
                 cancellationToken);
 
-        var response = await _retryPolicy
+        var result = await _retryPolicy
             .SendAndRetry(
                 sendAsync,
                 httpMethod,
@@ -87,22 +87,32 @@ public abstract partial class EazyHttpClientBase
         ResponseResults
             .Add(new(requestId)
             {
-                ResponseCode = (int)response
+                ResponseCode = (int)result
+                    .Content
                     .StatusCode,
-                ResponseStatus = $"{response.StatusCode}",
-                ResponseContentType = response
+                ResponseStatus = $"{result.Content.StatusCode}",
+                ResponseContentType = result
+                    .Content
                     .ContentHeaders
                     .ContentType,
-                ResponseContentDisposition = response
+                ResponseContentDisposition = result
+                    .Content
                     .ContentHeaders
                     .ContentDisposition,
-                ResponseContentHeaders = response
+                ResponseContentHeaders = result
+                    .Content
                     .ContentHeaders,
-                ResponseHeaders = response
+                ResponseHeaders = result
+                    .Content
                     .Headers
             });
 
-        return response;
+        if (result.Failure is not null)
+        {
+            throw result.Failure;
+        }
+
+        return result.Content;
     }
 
     private async Task<TResult?> DeserializeOrGetBytes<TResult>(
