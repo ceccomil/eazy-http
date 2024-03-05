@@ -53,6 +53,11 @@ public sealed class ResponseResult
     /// </summary>
     public ContentDispositionHeaderValue? ResponseContentDisposition { get; internal set; }
 
+    /// <summary>
+    /// The collection of headers included in the response.
+    /// </summary>
+    public HttpContentHeaders? ResponseHeaders { get; internal set; }
+
     internal ResponseResult(Guid? id)
     {
         id ??= Guid
