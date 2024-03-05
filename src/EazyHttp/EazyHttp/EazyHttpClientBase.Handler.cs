@@ -27,7 +27,7 @@ public abstract partial class EazyHttpClientBase
             cancellationToken);
 
         return await DeserializeOrGetBytes<TResult>(
-            response.Headers,
+            response.ContentHeaders,
             response.Content,
             cancellationToken);
     }
@@ -91,11 +91,13 @@ public abstract partial class EazyHttpClientBase
                     .StatusCode,
                 ResponseStatus = $"{response.StatusCode}",
                 ResponseContentType = response
-                    .Headers
+                    .ContentHeaders
                     .ContentType,
                 ResponseContentDisposition = response
-                    .Headers
+                    .ContentHeaders
                     .ContentDisposition,
+                ResponseContentHeaders = response
+                    .ContentHeaders,
                 ResponseHeaders = response
                     .Headers
             });

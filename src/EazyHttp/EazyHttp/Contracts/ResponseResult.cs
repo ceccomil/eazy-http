@@ -54,9 +54,14 @@ public sealed class ResponseResult
     public ContentDispositionHeaderValue? ResponseContentDisposition { get; internal set; }
 
     /// <summary>
+    /// The collection of content headers included in the response.
+    /// </summary>
+    public HttpContentHeaders? ResponseContentHeaders { get; internal set; }
+
+    /// <summary>
     /// The collection of headers included in the response.
     /// </summary>
-    public HttpContentHeaders? ResponseHeaders { get; internal set; }
+    public HttpResponseHeaders? ResponseHeaders { get; internal set; }
 
     internal ResponseResult(Guid? id)
     {
