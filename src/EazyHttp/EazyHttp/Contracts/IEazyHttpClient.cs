@@ -39,6 +39,20 @@ public interface IEazyHttpClient
     ContentDispositionHeaderValue? ResponseContentDisposition { get; }
 
     /// <summary>
+    /// The collection of content headers included in the response.
+    /// </summary>
+    public HttpContentHeaders? ResponseContentHeaders => ResponseResults
+        .Last?
+        .ResponseContentHeaders;
+
+    /// <summary>
+    /// The collection of headers included in the response.
+    /// </summary>
+    public HttpResponseHeaders? ResponseHeaders => ResponseResults
+        .Last?
+        .ResponseHeaders;
+
+    /// <summary>
     /// Send a GET request and returns a deserialized <typeparamref name="TResult"/>.
     /// </summary>
     /// <returns>A <typeparamref name="TResult"/>.</returns>
