@@ -1,15 +1,15 @@
 ﻿global using Doggo;
 global using DoggoEnhanced;
+global using DoggoEnhanced.EazyHttp;
+global using DoggoEnhanced.Helpers;
+global using DoggoEnhanced.Models;
+global using EazyHttp;
+global using EazyHttp.Contracts;
 global using Microsoft.Extensions.DependencyInjection;
 global using System.Diagnostics;
-global using EazyHttp.Contracts;
-global using EazyHttp;
-global using DoggoEnhanced.EazyHttp;
-global using System.Text.Json.Serialization;
-global using DoggoEnhanced.Models;
-global using System.Text.Json;
 global using System.Text;
-global using DoggoEnhanced.Helpers;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
 
 // This example required a valid Computer Vision endpoint
 // https://learn.microsoft.com/en-gb/azure/cognitive-services/computer-vision/
@@ -32,14 +32,14 @@ Start:
 var (data, fileName) = await dogService
     .GetAndSavePicture();
 
-Console
-    .WriteLine(
-        $"Here is your picture: {fileName}");
+var source = new FileInfo(fileName);
 
-Process
-    .Start(
-        $"powershell.exe",
-        fileName);
+Console.WriteLine(
+    $"Here is your picture: {source.FullName}");
+
+Process.Start(
+    "explorer.exe",
+    "\"" + source.FullName + "\"");
 
 var analysisService = scope
     .ServiceProvider
@@ -90,19 +90,17 @@ var (_, newImageFileName) = await analysisService
     .GetAndSaveAiPicture(
         text);
 
-Console
-    .WriteLine(
-        $"Here is your picture: {newImageFileName}");
+var aiImg = new FileInfo(newImageFileName);
 
-Process
-    .Start(
-        $"powershell.exe",
-        newImageFileName);
+Console.WriteLine(
+    $"Here is your picture: {aiImg.FullName}");
+
+Process.Start(
+    "explorer.exe",
+    "\"" + aiImg.FullName + "\"");
 
 
-Console
-    .WriteLine(
-        "Press Q to quit");
+Console.WriteLine("Press Q to quit");
 
 if (Console.ReadKey(true).Key != ConsoleKey.Q)
 {

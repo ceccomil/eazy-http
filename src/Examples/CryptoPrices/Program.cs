@@ -3,9 +3,9 @@ using CaptainLogger.Options;
 using CryptoPrices;
 using EazyHttp;
 using EazyHttp.Contracts;
-using EazyHttp.HttpClients;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using static CryptoPrices.Statics;
 
 var services = new ServiceCollection()
     .ConfigureEazyHttpClients(opts =>
@@ -13,13 +13,13 @@ var services = new ServiceCollection()
         opts
             .EazyHttpClients
             .Add(new(
-                "MessariClient",
+                MessariClient,
                 "https://data.messari.io/api/v2"));
 
         opts
             .HttpClientHandlers
             .Add(
-                "MessariClient",
+                MessariClient,
                 "CryptoPrices.CustomHttpHandler");
     })
     .AddEazyHttpClients()
@@ -62,7 +62,7 @@ using var scope = sp
     .CreateScope();
 
 var logger = sp
-    .GetRequiredService<ICaptainLogger<MessariClient>>();
+    .GetRequiredService<ICaptainLogger<EazyHttp.HttpClients.MessariClient>>();
 
 logger
     .InformationLog(
