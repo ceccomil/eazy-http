@@ -35,13 +35,14 @@ internal static class StatementsExtensions
         }
 
         return value
-            .AdjustStatement(match.Groups[1].Value)
+            .AdjustStatement(match.Groups[1].Value, true)
             .AdjustStatement(match.Groups[2].Value);
     }
 
     private static string AdjustStatement(
         this string statement,
-        string parameter)
+        string parameter,
+        bool skipVarQualifier = false)
     {
         if (parameter.Length > 2 &&
             parameter.First() == '"' &&
@@ -50,7 +51,11 @@ internal static class StatementsExtensions
             return statement;
         }
 
-        var newParam = $"\"{VarQualifier}{parameter}\"";
+        var qualifier = skipVarQualifier
+            ? ""
+            : VarQualifier;
+
+        var newParam = $"\"{qualifier}{parameter}\"";
 
         return statement
             .Replace(

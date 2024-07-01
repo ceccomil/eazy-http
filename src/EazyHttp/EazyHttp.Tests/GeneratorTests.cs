@@ -23,80 +23,80 @@ public class GeneratorTests
                     .ConsoleApplication));
 
     [Theory]
-    //[InlineData("""
-    //    services
-    //    .ConfigureEazyHttpClients(opts =>
-    //    {
-    //        opts
-    //            .NameSpacePrefix = 
-    //                "DataDog";
+    [InlineData("""
+        services
+        .ConfigureEazyHttpClients(opts =>
+        {
+            opts
+                .NameSpacePrefix = 
+                    "DataDog";
 
-    //        opts
-    //            .EazyHttpClients
-    //            .Add(new(
-    //                "DataDogLogs",
-    //                Gpm
-    //                .Core
-    //                .Logging
-    //                .LoggerExtensions
-    //                .DataDogIntakeUrl));
+            opts
+                .EazyHttpClients
+                .Add(new(
+                    DataDogLogs,
+                    Gpm
+                    .Core
+                    .Logging
+                    .LoggerExtensions
+                    .DataDogIntakeUrl));
 
-    //        opts
-    //            .PersistentHeaders
-    //            .Add(
-    //                "DataDogLogs",
-    //                new RequestHeader[]
-    //                {
-    //            new(
-    //                HeaderNames.Accept,
-    //                "application/json"),
-    //            new(
-    //                "DD-API-KEY",
-    //                dataDogApiKey)
-    //                });
+            opts
+                .PersistentHeaders
+                .Add(
+                    DataDogLogs,
+                    new RequestHeader[]
+                    {
+                new(
+                    HeaderNames.Accept,
+                    "application/json"),
+                new(
+                    "DD-API-KEY",
+                    dataDogApiKey)
+                    });
 
-    //        opts
-    //            .SerializersOptions
-    //            .Add(
-    //                "DataDogLogs",
-    //                new(
-    //                    JsonSerializerDefaults.Web)
-    //                {
-    //                    PropertyNamingPolicy = JsonNamingPolicy
-    //                        .CamelCase,
+            opts
+                .SerializersOptions
+                .Add(
+                    "DataDogLogs",
+                    new(
+                        JsonSerializerDefaults.Web)
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy
+                            .CamelCase,
 
-    //                    WriteIndented = false,
+                        WriteIndented = false,
 
-    //                    DefaultIgnoreCondition = JsonIgnoreCondition
-    //                        .WhenWritingNull
-    //                });
+                        DefaultIgnoreCondition = JsonIgnoreCondition
+                            .WhenWritingNull
+                    });
 
-    //        opts
-    //            .Retries
-    //            .Add(
-    //                "DataDogLogs",
-    //                new()
-    //                {
-    //                    MaxAttempts = 4,
-    //                    StatusCodeMatchingCondition = (code, method) =>
-    //                    {
-    //                        if (method != HttpMethod.Post)
-    //                        {
-    //                            return false;
-    //                        }
+            opts
+                .Retries
+                .Add(
+                    DataDogLogs,
+                    new()
+                    {
+                        MaxAttempts = 4,
+                        StatusCodeMatchingCondition = (code, method) =>
+                        {
+                            if (method != HttpMethod.Post)
+                            {
+                                return false;
+                            }
 
-    //                        if (code is HttpStatusCode.ServiceUnavailable
-    //                            or HttpStatusCode.GatewayTimeout
-    //                            or HttpStatusCode.RequestTimeout)
-    //                        {
-    //                            return true;
-    //                        }
+                            if (code is HttpStatusCode.ServiceUnavailable
+                                or HttpStatusCode.GatewayTimeout
+                                or HttpStatusCode.RequestTimeout)
+                            {
+                                return true;
+                            }
 
-    //                        return false;
-    //                    }
-    //                });
-    //    })
-    //    """)]
+                            return false;
+                        }
+                    });
+        })
+        """)]
     [InlineData("""
         services
         .ConfigureEazyHttpClients(opts =>
