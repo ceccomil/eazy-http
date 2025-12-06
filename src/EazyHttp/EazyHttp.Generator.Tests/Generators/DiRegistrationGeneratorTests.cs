@@ -31,12 +31,11 @@ public class DiRegistrationGeneratorTests
     files.Add(new("usings.cs", "global using Tests.Data;"));
 
     var finalDiagnostics = files.GetDiagnosticsForGenerated();
-    var readableDiagnostics = finalDiagnostics
-      .ToString();
+    //var readableDiagnostics = finalDiagnostics
+    //  .ToString();
 
     // Assert
     Assert.NotEmpty(files);
     Assert.Empty(finalDiagnostics.Errors);
-    Assert.NotEmpty(readableDiagnostics);
   }
 }

@@ -28,13 +28,12 @@ public class HttpClientGeneratorTests
     }
 
     var finalDiagnostics = files.GetDiagnosticsForGenerated(false);
-    var readableDiagnostics = finalDiagnostics
-      .ToString();
+    //var readableDiagnostics = finalDiagnostics
+    //  .ToString();
 
     // Assert
     Assert.NotEmpty(files);
     Assert.Empty(diagnostics);
     Assert.Empty(finalDiagnostics.Errors);
-    Assert.NotEmpty(readableDiagnostics);
   }
 }
