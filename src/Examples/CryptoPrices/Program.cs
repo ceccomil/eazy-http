@@ -1,25 +1,27 @@
 ﻿using CaptainLogger;
-using CaptainLogger.Options;
+using CaptainLogger.Generated;
+using CaptainLogger.Contracts.Options;
 using CryptoPrices;
 using EazyHttp;
 using EazyHttp.Contracts;
+using EazyHttp.Generated.Clients;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using static CryptoPrices.Statics;
 
 var services = new ServiceCollection()
     .ConfigureEazyHttpClients(opts =>
     {
         opts
-            .EazyHttpClients
+            .Clients
             .Add(new(
-                MessariClient,
-                "https://data.messari.io/api/v2"));
+                "MessariClient",
+                "https://data.messari.io/api/v2",
+                false));
 
         opts
-            .HttpClientHandlers
+            .HttpClientHandlerTypeNames
             .Add(
-                MessariClient,
+                "MessariClient",
                 "CryptoPrices.CustomHttpHandler");
     })
     .AddEazyHttpClients()
@@ -62,7 +64,7 @@ using var scope = sp
     .CreateScope();
 
 var logger = sp
-    .GetRequiredService<ICaptainLogger<EazyHttp.HttpClients.MessariClient>>();
+    .GetRequiredService<ILogger<MessariClient>>();
 
 logger
     .InformationLog(
@@ -73,8 +75,7 @@ logger
         "Getting Eazy Http clients from DI container");
 
 var coinClient = sp
-    .GetRequiredService<IEazyClients>()
-    .MessariClient;
+    .GetRequiredService<IMessariClient>();
 
 var query = new HttpQuery();
 
@@ -115,38 +116,16 @@ logger
         min.Slug,
         min.Metrics.MarketData.PriceUsd);
 
+
 for (var i = 0; i < 14; i++)
 {
-    var guid = Guid.Parse(
-        "10000000-0001-0001-" +
-        $"0001-0000000000{i:00}");
-
-    _ = coinClient
-        .GetAsync<ResultDto>(
+    var response = await coinClient
+        .GetWithResponseAsync<ResultDto>(
         "assets",
-        query,
-        requestId: guid);
-}
+        query);
 
-logger
-    .DebugLog(
-    "Waiting for all responses" +
-    $" currently {coinClient
-        .ResponseResults
-        .Count}");
-
-await Task
-    .Delay(10_000);
-
-logger
-    .DebugLog(
-    "All responses" +
-    $" {coinClient
-        .ResponseResults
-        .Count}");
-
-foreach (var r in coinClient.ResponseResults)
-{
-    logger.DebugLog(
-        $"{r.ResponseTime:mm:ss.fff} -> {r.Id}");
+    logger
+        .InformationLog(
+            "Response Code:",
+            response.StatusCode);
 }

@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <VersionSuffix>devbuild.13</VersionSuffix>
+    <VersionSuffix>devbuild.14</VersionSuffix>
   </PropertyGroup>
   
 </Project>

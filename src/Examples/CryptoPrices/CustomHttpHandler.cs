@@ -1,14 +1,15 @@
-﻿using CaptainLogger;
+﻿using CaptainLogger.Generated;
+using Microsoft.Extensions.Logging;
 using System.Net;
 
 namespace CryptoPrices;
 
 public class CustomHttpHandler : HttpClientHandler
 {
-    private readonly ICaptainLogger _logger;
+    private readonly ILogger _logger;
 
     public CustomHttpHandler(
-        ICaptainLogger<CustomHttpHandler> logger)
+        ILogger<CustomHttpHandler> logger)
         : base()
     {
         _logger = logger;
