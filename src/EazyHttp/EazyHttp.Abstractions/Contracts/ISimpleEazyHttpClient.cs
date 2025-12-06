@@ -18,20 +18,32 @@
 /// </remarks>
 public interface ISimpleEazyHttpClient
 {
+  /// <summary>
+  /// Gets the underlying <see cref="HttpClient"/> instance used for requests.
+  /// </summary>
   HttpClient HttpClient { get; }
 
   // -------- GET --------
 
+  /// <summary>
+  /// Sends a GET request and deserializes the response body to <typeparamref name="TResult"/>.
+  /// </summary>
   Task<TResult?> GetAsync<TResult>(
     string route,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a GET request and returns a <see cref="ResponseEnvelope{TResult}"/> containing HTTP metadata and the deserialized body.
+  /// </summary>
   Task<ResponseEnvelope<TResult?>> GetWithResponseAsync<TResult>(
     string route,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a GET request without expecting a response body.
+  /// </summary>
   Task GetAsync(
     string route,
     HttpQuery? query = null,
@@ -39,18 +51,27 @@ public interface ISimpleEazyHttpClient
 
   // -------- PUT --------
 
+  /// <summary>
+  /// Sends a PUT request with a body and deserializes the response body to <typeparamref name="TResult"/>.
+  /// </summary>
   Task<TResult?> PutAsync<TResult>(
     string route,
     object body,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a PUT request with a body and returns a <see cref="ResponseEnvelope{TResult}"/>.
+  /// </summary>
   Task<ResponseEnvelope<TResult?>> PutWithResponseAsync<TResult>(
     string route,
     object body,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a PUT request with a body and no response body.
+  /// </summary>
   Task PutAsync(
     string route,
     object body,
@@ -59,18 +80,27 @@ public interface ISimpleEazyHttpClient
 
   // -------- POST --------
 
+  /// <summary>
+  /// Sends a POST request with a body and deserializes the response body to <typeparamref name="TResult"/>.
+  /// </summary>
   Task<TResult?> PostAsync<TResult>(
     string route,
     object body,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a POST request with a body and returns a <see cref="ResponseEnvelope{TResult}"/>.
+  /// </summary>
   Task<ResponseEnvelope<TResult?>> PostWithResponseAsync<TResult>(
     string route,
     object body,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a POST request with a body and no response body.
+  /// </summary>
   Task PostAsync(
     string route,
     object body,
@@ -79,16 +109,25 @@ public interface ISimpleEazyHttpClient
 
   // -------- DELETE --------
 
+  /// <summary>
+  /// Sends a DELETE request and deserializes the response body to <typeparamref name="TResult"/>.
+  /// </summary>
   Task<TResult?> DeleteAsync<TResult>(
     string route,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a DELETE request and returns a <see cref="ResponseEnvelope{TResult}"/>.
+  /// </summary>
   Task<ResponseEnvelope<TResult?>> DeleteWithResponseAsync<TResult>(
     string route,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a DELETE request without expecting a response body.
+  /// </summary>
   Task DeleteAsync(
     string route,
     HttpQuery? query = null,
@@ -96,18 +135,27 @@ public interface ISimpleEazyHttpClient
 
   // -------- PATCH --------
 
+  /// <summary>
+  /// Sends a PATCH request with a body and deserializes the response body to <typeparamref name="TResult"/>.
+  /// </summary>
   Task<TResult?> PatchAsync<TResult>(
     string route,
     object body,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a PATCH request with a body and returns a <see cref="ResponseEnvelope{TResult}"/>.
+  /// </summary>
   Task<ResponseEnvelope<TResult?>> PatchWithResponseAsync<TResult>(
     string route,
     object body,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a PATCH request with a body and no response body.
+  /// </summary>
   Task PatchAsync(
     string route,
     object body,
@@ -116,18 +164,27 @@ public interface ISimpleEazyHttpClient
 
   // -------- multipart/form-data --------
 
+  /// <summary>
+  /// Sends a multipart/form-data POST request and deserializes the response body to <typeparamref name="TResult"/>.
+  /// </summary>
   Task<TResult?> PostFormAsync<TResult>(
     string route,
     IEnumerable<FormElement> elements,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a multipart/form-data POST request and returns a <see cref="ResponseEnvelope{TResult}"/>.
+  /// </summary>
   Task<ResponseEnvelope<TResult?>> PostFormWithResponseAsync<TResult>(
     string route,
     IEnumerable<FormElement> elements,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends a multipart/form-data POST request without expecting a response body.
+  /// </summary>
   Task PostFormAsync(
     string route,
     IEnumerable<FormElement> elements,
@@ -136,18 +193,27 @@ public interface ISimpleEazyHttpClient
 
   // -------- application/x-www-form-urlencoded --------
 
+  /// <summary>
+  /// Sends an application/x-www-form-urlencoded POST request and deserializes the response body to <typeparamref name="TResult"/>.
+  /// </summary>
   Task<TResult?> PostUrlEncodedFormAsync<TResult>(
     string route,
     IEnumerable<KeyValuePair<string, string?>> elements,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends an application/x-www-form-urlencoded POST request and returns a <see cref="ResponseEnvelope{TResult}"/>.
+  /// </summary>
   Task<ResponseEnvelope<TResult?>> PostUrlEncodedFormWithResponseAsync<TResult>(
     string route,
     IEnumerable<KeyValuePair<string, string?>> elements,
     HttpQuery? query = null,
     CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Sends an application/x-www-form-urlencoded POST request without expecting a response body.
+  /// </summary>
   Task PostUrlEncodedFormAsync(
     string route,
     IEnumerable<KeyValuePair<string, string?>> elements,

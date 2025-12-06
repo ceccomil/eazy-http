@@ -27,7 +27,7 @@ internal class HttpClientConfiguration
       {
         x.NamespacePrefix = "MyCustom.Namespace";
 
-        x.Clients.Add(new("Test1", "https://test", false));
+        x.Clients.Add(new("Test1", "https://test", true));
 
         x
           .SerializerOptions.Add(

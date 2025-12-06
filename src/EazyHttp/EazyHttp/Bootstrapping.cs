@@ -1,14 +1,4 @@
-﻿using EazyHttp.Contracts;
-using EazyHttp.Exceptions;
-using EazyHttp.Runtime;
-using System.Collections.Immutable;
-using System.ComponentModel;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-
-namespace EazyHttp;
+﻿namespace EazyHttp;
 
 /// <summary>
 /// Provides extension methods for configuring Eazy HTTP clients within an application's dependency injection container.

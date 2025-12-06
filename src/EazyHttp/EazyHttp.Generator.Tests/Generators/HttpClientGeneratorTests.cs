@@ -7,7 +7,7 @@ public class HttpClientGeneratorTests
   public void DebuggingTest()
   {
     // Arrange
-    var compilation = SyntaxTrees.CreateCompilation("./Data");
+    var compilation = SyntaxTrees.CreateCompilation("./Data", false);
     var generator = new HttpClientGenerator();
     var driver = CSharpGeneratorDriver.Create(generator);
 
@@ -27,7 +27,7 @@ public class HttpClientGeneratorTests
       files.Add(new(st.FilePath, st.ToString()));
     }
 
-    var finalDiagnostics = files.GetDiagnosticsForGenerated();
+    var finalDiagnostics = files.GetDiagnosticsForGenerated(false);
     var readableDiagnostics = finalDiagnostics
       .ToString();
 

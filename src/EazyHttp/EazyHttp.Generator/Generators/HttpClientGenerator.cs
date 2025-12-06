@@ -184,185 +184,164 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
 
     var code =
       $$"""
-      public async Task<TResult{{nullable}}> DeleteAsync<TResult>(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
-      {
-        var result = await SendAndDeserializeAsync<TResult>(
-          HttpMethod.Delete,
-          route,
-          query,
-          content: null,
-          additionalHeaders,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-          return result;
-      }
-
-      public async Task DeleteAsync(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
-      {
-        await SendNoResultAsync(
-          HttpMethod.Delete,
-          route,
-          query,
-          content: null,
-          additionalHeaders,
-          cancellationToken)
-          .ConfigureAwait(false);
-      }
-
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> DeleteWithResponseAsync<TResult>(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
-      {
-        var envelope = await SendAndEnvelopeAsync<TResult>(
-          HttpMethod.Delete,
-          route,
-          query,
-          content: null,
-          additionalHeaders,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-        return envelope;
-      }
-
+      // GET
       public async Task<TResult{{nullable}}> GetAsync<TResult>(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var result = await SendAndDeserializeAsync<TResult>(
-          HttpMethod.Get,
-          route,
-          query,
-          content: null,
-          additionalHeaders,
-          cancellationToken)
-          .ConfigureAwait(false);
-
-          return result;
-      }
-
-      public async Task GetAsync(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
-      {
-        await SendNoResultAsync(
-          HttpMethod.Get,
-          route,
-          query,
-          content: null,
-          additionalHeaders,
-          cancellationToken)
-          .ConfigureAwait(false);
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Get, route, query, null, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task<ResponseEnvelope<TResult{{nullable}}>> GetWithResponseAsync<TResult>(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var envelope = await SendAndEnvelopeAsync<TResult>(
-          HttpMethod.Get,
-          route,
-          query,
-          content: null,
-          additionalHeaders,
-          cancellationToken)
-          .ConfigureAwait(false);
-
-        return envelope;
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Get, route, query, null, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<TResult{{nullable}}> PatchAsync<TResult>(string route, object body, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task GetAsync(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var result = await SendAndDeserializeAsync<TResult>(
-          HttpMethod.Patch,
-          route,
-          query: null,
-          body,
-          additionalHeaders,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-          return result;
+        await SendNoResultAsync(HttpMethod.Get, route, query, null, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PatchAsync(string route, object body, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      // PUT
+      public async Task<TResult{{nullable}}> PutAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        await SendNoResultAsync(
-          HttpMethod.Patch,
-          route,
-          query: null,
-          body,
-          additionalHeaders,
-          cancellationToken)
-          .ConfigureAwait(false);
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Put, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> PatchWithResponseAsync<TResult>(string route, object body, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PutWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var envelope = await SendAndEnvelopeAsync<TResult>(
-          HttpMethod.Patch,
-          route,
-          query: null,
-          query,
-          body,
-          additionalHeaders,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-        return envelope;
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Put, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<TResult{{nullable}}> PostAsync<TResult>(string route, object body, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task PutAsync(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        await SendNoResultAsync(HttpMethod.Put, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PostAsync(string route, object body, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      // POST
+      public async Task<TResult{{nullable}}> PostAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<TResult{{nullable}}> PostFormAsync<TResult>(string route, IEnumerable<FormElement> elements, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PostFormAsync(string route, IEnumerable<FormElement> elements, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task PostAsync(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        await SendNoResultAsync(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostFormWithResponseAsync<TResult>(string route, IEnumerable<FormElement> elements, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      // DELETE
+      public async Task<TResult{{nullable}}> DeleteAsync<TResult>(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Delete, route, query, null, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<TResult{{nullable}}> PostUrlEncodedFormAsync<TResult>(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> DeleteWithResponseAsync<TResult>(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Delete, route, query, null, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PostUrlEncodedFormAsync(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task DeleteAsync(string route, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        await SendNoResultAsync(HttpMethod.Delete, route, query, null, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public Task<ResponseEnvelope<TResult{{nullable}}>> PostUrlEncodedFormWithResponseAsync<TResult>(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      // PATCH
+      public async Task<TResult{{nullable}}> PatchAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Patch, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostWithResponseAsync<TResult>(string route, object body, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PatchWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Patch, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<TResult{{nullable}}> PutAsync<TResult>(string route, object body, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task PatchAsync(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        await SendNoResultAsync(HttpMethod.Patch, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PutAsync(string route, object body, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      // POST multipart/form-data
+      public async Task<TResult{{nullable}}> PostFormAsync<TResult>(string route, IEnumerable<FormElement> elements, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new MultipartFormDataContent();
+        foreach (var el in elements)
+        {
+          if (el.FileName != null)
+          {
+            content.Add(el.HttpElementContent, el.QueryParam, el.FileName);
+          }
+          else
+          {
+            content.Add(el.HttpElementContent, el.QueryParam);
+          }
+        }
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> PutWithResponseAsync<TResult>(string route, object body, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostFormWithResponseAsync<TResult>(string route, IEnumerable<FormElement> elements, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new MultipartFormDataContent();
+        foreach (var el in elements)
+        {
+          if (el.FileName != null)
+          {
+            content.Add(el.HttpElementContent, el.QueryParam, el.FileName);
+          }
+          else
+          {
+            content.Add(el.HttpElementContent, el.QueryParam);
+          }
+        }
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
+      }
+
+      public async Task PostFormAsync(string route, IEnumerable<FormElement> elements, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      {
+        var content = new MultipartFormDataContent();
+        foreach (var el in elements)
+        {
+          if (el.FileName != null)
+          {
+            content.Add(el.HttpElementContent, el.QueryParam, el.FileName);
+          }
+          else
+          {
+            content.Add(el.HttpElementContent, el.QueryParam);
+          }
+        }
+        await SendNoResultAsync(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
+      }
+
+      // POST application/x-www-form-urlencoded
+      public async Task<TResult{{nullable}}> PostUrlEncodedFormAsync<TResult>(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      {
+        var content = new FormUrlEncodedContent(elements);
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
+      }
+
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostUrlEncodedFormWithResponseAsync<TResult>(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      {
+        var content = new FormUrlEncodedContent(elements);
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
+      }
+
+      public async Task PostUrlEncodedFormAsync(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
+      {
+        var content = new FormUrlEncodedContent(elements);
+        await SendNoResultAsync(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
       """;
 
@@ -377,184 +356,165 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
 
     var code =
       $$"""
-      public async Task<TResult{{nullable}}> DeleteAsync<TResult>(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
-      {
-        var result = await SendAndDeserializeAsync<TResult>(
-          HttpMethod.Delete,
-          route,
-          query,
-          content: null,
-          additionalHeaders: null,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-          return result;
-      }
-
-      public async Task DeleteAsync(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
-      {
-        await SendNoResultAsync(
-          HttpMethod.Delete,
-          route,
-          query,
-          content: null,
-          additionalHeaders: null,
-          cancellationToken)
-          .ConfigureAwait(false);
-      }
-
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> DeleteWithResponseAsync<TResult>(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
-      {
-        var envelope = await SendAndEnvelopeAsync<TResult>(
-          HttpMethod.Delete,
-          route,
-          query,
-          content: null,
-          additionalHeaders: null,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-        return envelope;
-      }
-
       public async Task<TResult{{nullable}}> GetAsync<TResult>(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var result = await SendAndDeserializeAsync<TResult>(
-          HttpMethod.Get,
-          route,
-          query,
-          content: null,
-          additionalHeaders: null,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-          return result;
-      }
-
-      public async Task GetAsync(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
-      {
-        await SendNoResultAsync(
-          HttpMethod.Get,
-          route,
-          query,
-          content: null,
-          additionalHeaders: null,
-          cancellationToken)
-          .ConfigureAwait(false);
+        var result = await SendAndDeserializeAsync<TResult>(HttpMethod.Get, route, query, null, null, cancellationToken).ConfigureAwait(false);
+        return result;
       }
 
       public async Task<ResponseEnvelope<TResult{{nullable}}>> GetWithResponseAsync<TResult>(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var envelope = await SendAndEnvelopeAsync<TResult>(
-          HttpMethod.Get,
-          route,
-          query,
-          content: null,
-          additionalHeaders: null,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-        return envelope;
+        var result = await SendAndEnvelopeAsync<TResult>(HttpMethod.Get, route, query, null, null, cancellationToken).ConfigureAwait(false);
+        return result;
       }
 
-      public async Task<TResult{{nullable}}> PatchAsync<TResult>(string route, object body, CancellationToken cancellationToken = default)
+      public async Task GetAsync(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var result = await SendAndDeserializeAsync<TResult>(
-          HttpMethod.Patch,
-          route,
-          query: null,
-          body,
-          additionalHeaders: null,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-          return result;
+        await SendNoResultAsync(HttpMethod.Get, route, query, null, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PatchAsync(string route, object body, CancellationToken cancellationToken = default)
+      // PUT
+      public async Task<TResult{{nullable}}> PutAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        await SendNoResultAsync(
-          HttpMethod.Patch,
-          route,
-          query: null,
-          body,
-          additionalHeaders: null,
-          cancellationToken)
-          .ConfigureAwait(false);
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Put, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> PatchWithResponseAsync<TResult>(string route, object body, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PutWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var envelope = await SendAndEnvelopeAsync<TResult>(
-          HttpMethod.Patch,
-          route,
-          query: null,
-          body,
-          additionalHeaders: null,
-          cancellationToken)
-          .ConfigureAwait(false);
-      
-        return envelope;
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Put, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<TResult{{nullable}}> PostAsync<TResult>(string route, object body, CancellationToken cancellationToken = default)
+      public async Task PutAsync(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        await SendNoResultAsync(HttpMethod.Put, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PostAsync(string route, object body, CancellationToken cancellationToken = default)
+      // POST
+      public async Task<TResult{{nullable}}> PostAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<TResult{{nullable}}> PostFormAsync<TResult>(string route, IEnumerable<FormElement> elements, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PostFormAsync(string route, IEnumerable<FormElement> elements, CancellationToken cancellationToken = default)
+      public async Task PostAsync(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        await SendNoResultAsync(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostFormWithResponseAsync<TResult>(string route, IEnumerable<FormElement> elements, CancellationToken cancellationToken = default)
+      // DELETE
+      public async Task<TResult{{nullable}}> DeleteAsync<TResult>(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Delete, route, query, null, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<TResult{{nullable}}> PostUrlEncodedFormAsync<TResult>(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> DeleteWithResponseAsync<TResult>(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Delete, route, query, null, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PostUrlEncodedFormAsync(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, CancellationToken cancellationToken = default)
+      public async Task DeleteAsync(string route, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        await SendNoResultAsync(HttpMethod.Delete, route, query, null, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostUrlEncodedFormWithResponseAsync<TResult>(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, CancellationToken cancellationToken = default)
+      // PATCH
+      public async Task<TResult{{nullable}}> PatchAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Patch, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostWithResponseAsync<TResult>(string route, object body, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PatchWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Patch, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<TResult{{nullable}}> PutAsync<TResult>(string route, object body, CancellationToken cancellationToken = default)
+      public async Task PatchAsync(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        await SendNoResultAsync(HttpMethod.Patch, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task PutAsync(string route, object body, CancellationToken cancellationToken = default)
+      // POST multipart/form-data
+      public async Task<TResult{{nullable}}> PostFormAsync<TResult>(string route, IEnumerable<FormElement> elements, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new MultipartFormDataContent();
+        foreach (var el in elements)
+        {
+          if (el.FileName != null)
+          {
+            content.Add(el.HttpElementContent, el.QueryParam, el.FileName);
+          }
+          else
+          {
+            content.Add(el.HttpElementContent, el.QueryParam);
+          }
+        }
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
-      public async Task<ResponseEnvelope<TResult{{nullable}}>> PutWithResponseAsync<TResult>(string route, object body, CancellationToken cancellationToken = default)
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostFormWithResponseAsync<TResult>(string route, IEnumerable<FormElement> elements, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        throw new NotImplementedException();
+        var content = new MultipartFormDataContent();
+        foreach (var el in elements)
+        {
+          if (el.FileName != null)
+          {
+            content.Add(el.HttpElementContent, el.QueryParam, el.FileName);
+          }
+          else
+          {
+            content.Add(el.HttpElementContent, el.QueryParam);
+          }
+        }
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
+      }
+
+      public async Task PostFormAsync(string route, IEnumerable<FormElement> elements, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
+      {
+        var content = new MultipartFormDataContent();
+        foreach (var el in elements)
+        {
+          if (el.FileName != null)
+          {
+            content.Add(el.HttpElementContent, el.QueryParam, el.FileName);
+          }
+          else
+          {
+            content.Add(el.HttpElementContent, el.QueryParam);
+          }
+        }
+        await SendNoResultAsync(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
+      }
+
+      // POST application/x-www-form-urlencoded
+      public async Task<TResult{{nullable}}> PostUrlEncodedFormAsync<TResult>(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
+      {
+        var content = new FormUrlEncodedContent(elements);
+        return await SendAndDeserializeAsync<TResult>(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
+      }
+
+      public async Task<ResponseEnvelope<TResult{{nullable}}>> PostUrlEncodedFormWithResponseAsync<TResult>(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
+      {
+        var content = new FormUrlEncodedContent(elements);
+        return await SendAndEnvelopeAsync<TResult>(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
+      }
+
+      public async Task PostUrlEncodedFormAsync(string route, IEnumerable<KeyValuePair<string, string{{nullable}}>> elements, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
+      {
+        var content = new FormUrlEncodedContent(elements);
+        await SendNoResultAsync(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
       """;
 
