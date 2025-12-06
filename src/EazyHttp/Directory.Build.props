@@ -1,9 +1,29 @@
 ﻿<Project>
+  <Import Project="Directory.Build.Local.props" Condition="Exists('Directory.Build.Local.props')" />
+
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <PackageVersion>3.10.1-alpha-0.1</PackageVersion>
+    <VersionPrefix>4.1.0</VersionPrefix>
     <Authors>Chekko Milani</Authors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+    <MSBuildTreatWarningsAsErrors>True</MSBuildTreatWarningsAsErrors>
+    <PackageProjectUrl>https://github.com/ceccomil/eazy-http</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <VersionSuffix>devbuild.14</VersionSuffix>
+  </PropertyGroup>
+  
 </Project>
