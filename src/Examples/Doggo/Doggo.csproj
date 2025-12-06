@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EazyHttp" Version="3.10.1-alpha-0.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="EazyHttp" Version="4.1.0-devbuild.14" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

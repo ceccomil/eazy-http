@@ -1,19 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using Doggo.Http.Generated.Clients;
+using Doggo.Models;
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Doggo.Models;
-using EazyHttp;
 
 namespace Doggo;
 
 public interface IRandomDog
 {
-    IEazyClients Clients { get; }
+    public static string BaseUrl => "https://dog.ceo/api/";
+
+    public static JsonSerializerOptions JsonOptions { get; } = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+
+    IDoggoClient Http { get; }
 
     Task<byte[]> GetPicture(
         CancellationToken token = default);
@@ -22,23 +28,16 @@ public interface IRandomDog
         CancellationToken token = default);
 }
 
-public class RandomDog : IRandomDog
+public class RandomDog(IDoggoClient http) : IRandomDog
 {
     private const string IMAGE_ROUTE = "https://dog.ceo/api/breeds/image/random";
 
-    public IEazyClients Clients { get; }
-
-    public RandomDog(
-            IEazyClients clients)
-    {
-        Clients = clients;
-    }
+    public IDoggoClient Http { get; } = http;
 
     public async Task<byte[]> GetPicture(
         CancellationToken token = default)
     {
-        var dogDetail = await Clients
-            .SharedHttpClient
+        var dogDetail = await Http
             .GetAsync<DogImage>(
                 IMAGE_ROUTE,
                 cancellationToken: token);
@@ -50,19 +49,15 @@ public class RandomDog : IRandomDog
                 $"[{dogDetail?.Status}] Dog picture not found!");
         }
 
-        var imageData = await Clients
-            .SharedHttpClient
+        var imageData = await Http
             .GetAsync<byte[]>(
                 dogDetail.ImgUrl,
                 cancellationToken: token);
 
-        if (imageData is null)
-        {
-            throw new ApplicationException(
-                $"Dog picture data is null!");
-        }
-
-        return imageData;
+        return imageData is null
+            ? throw new ApplicationException(
+                $"Dog picture data is null!")
+            : imageData;
     }
 
     public async Task<(byte[], string)> GetAndSavePicture(
@@ -78,7 +73,7 @@ public class RandomDog : IRandomDog
                 imageData,
                 token);
 
-        return 
+        return
             (imageData,
             fileName);
     }
