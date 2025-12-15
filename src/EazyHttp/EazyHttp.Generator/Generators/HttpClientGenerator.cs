@@ -79,9 +79,9 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
       {
         private readonly {{nameof(EazyClientOptions)}} _options;
         private readonly IServiceProvider _serviceProvider;
-        private readonly JsonSerializerOptions _serializerOptions;
+        private readonly JsonSerializerOptions _requestSerializerOptions;
+        private readonly JsonSerializerOptions _responseSerializerOptions;
         private readonly Encoding _encoding;
-        private readonly RetryConfiguration{{nullable}} _retryConfiguration;
 
         public HttpClient HttpClient { get; }
           
@@ -101,9 +101,9 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
             serviceProvider);
 
           _encoding = ResolveEncoding(context, _options);
-          _serializerOptions = ResolveSerializer(context, _options);
+          _requestSerializerOptions = ResolveRequestSerializer(context, _options);
+          _responseSerializerOptions = ResolveResponseSerializer(context, _options);
           var headers = ResolveHeaders(context, _options);
-          _retryConfiguration = ResolveRetry(context, _options);
 
           foreach (var header in headers)
           {
@@ -203,38 +203,38 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
       // PUT
       public async Task<TResult{{nullable}}> PutAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndDeserializeAsync<TResult>(HttpMethod.Put, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task<ResponseEnvelope<TResult{{nullable}}>> PutWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndEnvelopeAsync<TResult>(HttpMethod.Put, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task PutAsync(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         await SendNoResultAsync(HttpMethod.Put, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
       // POST
       public async Task<TResult{{nullable}}> PostAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndDeserializeAsync<TResult>(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task<ResponseEnvelope<TResult{{nullable}}>> PostWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndEnvelopeAsync<TResult>(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task PostAsync(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         await SendNoResultAsync(HttpMethod.Post, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
@@ -257,19 +257,19 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
       // PATCH
       public async Task<TResult{{nullable}}> PatchAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndDeserializeAsync<TResult>(HttpMethod.Patch, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task<ResponseEnvelope<TResult{{nullable}}>> PatchWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndEnvelopeAsync<TResult>(HttpMethod.Patch, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task PatchAsync(string route, object body, HttpQuery{{nullable}} query = null, IEnumerable<RequestHeader>{{nullable}} additionalHeaders = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         await SendNoResultAsync(HttpMethod.Patch, route, query, content, additionalHeaders, cancellationToken).ConfigureAwait(false);
       }
 
@@ -376,38 +376,38 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
       // PUT
       public async Task<TResult{{nullable}}> PutAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndDeserializeAsync<TResult>(HttpMethod.Put, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task<ResponseEnvelope<TResult{{nullable}}>> PutWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndEnvelopeAsync<TResult>(HttpMethod.Put, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task PutAsync(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         await SendNoResultAsync(HttpMethod.Put, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
       // POST
       public async Task<TResult{{nullable}}> PostAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndDeserializeAsync<TResult>(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task<ResponseEnvelope<TResult{{nullable}}>> PostWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndEnvelopeAsync<TResult>(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task PostAsync(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         await SendNoResultAsync(HttpMethod.Post, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
@@ -430,19 +430,19 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
       // PATCH
       public async Task<TResult{{nullable}}> PatchAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndDeserializeAsync<TResult>(HttpMethod.Patch, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task<ResponseEnvelope<TResult{{nullable}}>> PatchWithResponseAsync<TResult>(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         return await SendAndEnvelopeAsync<TResult>(HttpMethod.Patch, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
       public async Task PatchAsync(string route, object body, HttpQuery{{nullable}} query = null, CancellationToken cancellationToken = default)
       {
-        var content = new StringContent(JsonSerializer.Serialize(body, _serializerOptions), _encoding, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(body, _requestSerializerOptions), _encoding, "application/json");
         await SendNoResultAsync(HttpMethod.Patch, route, query, content, null, cancellationToken).ConfigureAwait(false);
       }
 
@@ -571,18 +571,18 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
         return Encoding.UTF8;
       }
 
-      private static JsonSerializerOptions ResolveSerializer(
+      private static JsonSerializerOptions ResolveRequestSerializer(
         ClientContext context,
         EazyClientOptions options)
       {
         // 1. Fixed per-client serializer
-        if (options.SerializerOptions.TryGetValue(context.ClientName, out var serializer))
+        if (options.RequestSerializerOptions.TryGetValue(context.ClientName, out var serializer))
         {
           return serializer;
         }
 
         // 2. Resolver fallback
-        if (options.ResolveSerializer is { } resolver)
+        if (options.ResolveRequestSerializer is { } resolver)
         {
           var resolved = resolver(context);
           if (resolved is not null)
@@ -591,6 +591,33 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
           }
         }
 
+        // 3. Default
+        return new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        {
+          PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+      }
+
+      private static JsonSerializerOptions ResolveResponseSerializer(
+        ClientContext context,
+        EazyClientOptions options)
+      {
+        // 1. Fixed per-client serializer
+        if (options.ResponseSerializerOptions.TryGetValue(context.ClientName, out var serializer))
+        {
+          return serializer;
+        }
+      
+        // 2. Resolver fallback
+        if (options.ResolveResponseSerializer is { } resolver)
+        {
+          var resolved = resolver(context);
+          if (resolved is not null)
+          {
+            return resolved;
+          }
+        }
+      
         // 3. Default
         return new JsonSerializerOptions(JsonSerializerDefaults.Web)
         {
@@ -620,26 +647,6 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
 
         // 3. Default: empty
         return [];
-      }
-
-      private static RetryConfiguration{{nullable}} ResolveRetry(
-        ClientContext context,
-        EazyClientOptions options)
-      {
-        // 1. Fixed per-client retry-config
-        if (options.Retries.TryGetValue(context.ClientName, out var cfg))
-        {
-          return cfg;
-        }
-
-        // 2. Resolver fallback
-        if (options.ResolveRetry is { } resolver)
-        {
-          return resolver(context);
-        }
-
-        // 3. Default: no retry
-        return null;
       }
       """;
 
@@ -714,15 +721,6 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
           .ContentType?
           .MediaType;
 
-        // JSON branch
-        if (!string.IsNullOrWhiteSpace(mediaType) &&
-          mediaType.Contains("json", StringComparison.OrdinalIgnoreCase))
-        {
-          return JsonSerializer.Deserialize<TResult>(
-            raw.ContentBytes,
-            _serializerOptions);
-        }
-
         // Non-JSON branch: support string / byte[] / Stream
         var targetType = typeof(TResult);
 
@@ -737,10 +735,19 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
           return (TResult{{nullable}})(object)raw.ContentBytes;
         }
 
-        if (targetType == typeof(Stream))
+        if (targetType == typeof(Stream) || targetType == typeof(MemoryStream))
         {
           var ms = new MemoryStream(raw.ContentBytes, writable: false);
           return (TResult{{nullable}})(object)ms;
+        }
+
+        // JSON branch
+        if (!string.IsNullOrWhiteSpace(mediaType) &&
+          mediaType.Contains("json", StringComparison.OrdinalIgnoreCase))
+        {
+          return JsonSerializer.Deserialize<TResult>(
+            raw.ContentBytes,
+            _responseSerializerOptions);
         }
 
         throw new ByteArrayExpectedException(
@@ -792,12 +799,8 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
           }
         }
 
-        using var response = await HttpRetryExecutor
-          .ExecuteAsync(
-            HttpClient,
-            request,
-            _retryConfiguration,
-            cancellationToken)
+        using var response = await HttpClient
+          .SendAsync(request, cancellationToken)
           .ConfigureAwait(false);
 
         byte[] contentBytes = [];
@@ -965,12 +968,8 @@ internal sealed class HttpClientGenerator : IIncrementalGenerator
           }
         }
 
-        using var response = await HttpRetryExecutor
-          .ExecuteAsync(
-            HttpClient,
-            request,
-            _retryConfiguration,
-            cancellationToken)
+        using var response = await HttpClient
+          .SendAsync(request, cancellationToken)
           .ConfigureAwait(false);
 
         if (!response.IsSuccessStatusCode)

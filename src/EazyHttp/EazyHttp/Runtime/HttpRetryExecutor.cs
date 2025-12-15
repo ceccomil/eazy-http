@@ -1,74 +1,61 @@
 ﻿namespace EazyHttp.Runtime;
 
 /// <summary>
-/// Provides methods for executing HTTP requests with configurable retry logic and exponential backoff.
+/// Provides factory methods for creating HTTP retry policies using Polly for resilient HTTP request execution.
 /// </summary>
-/// <remarks>This class is intended for scenarios where transient HTTP failures may occur and automatic retries
-/// are desirable. It supports retrying requests based on configurable conditions, such as specific HTTP status codes or
-/// exceptions. All methods are thread-safe and can be used concurrently.</remarks>
+/// <remarks>This class is intended for use in scenarios where HTTP requests may fail transiently and should be
+/// retried according to a configurable policy. The generated policies can be used with HTTP clients to automatically
+/// handle retries for failed requests based on exceptions or HTTP response status codes. All members are static and
+/// thread-safe.</remarks>
 public static class HttpRetryExecutor
 {
   /// <summary>
-  /// Sends an HTTP request asynchronously with optional retry logic based on the specified configuration.
+  /// Creates an asynchronous retry policy for HTTP requests based on the specified retry configuration.Hi
   /// </summary>
-  /// <remarks>If retry configuration is provided and the maximum number of attempts is greater than 1, the
-  /// method retries the request on HTTP request exceptions or when the response status code matches the specified
-  /// condition. Retries use exponential backoff with jitter. The request is not retried if the cancellation token is
-  /// canceled.</remarks>
-  /// <param name="client">The HTTP client used to send the request. Must not be null.</param>
-  /// <param name="request">The HTTP request message to send. Must not be null.</param>
-  /// <param name="config">The retry configuration that determines the number of attempts, backoff strategy, and status code matching logic.
-  /// If null or if the maximum attempts is less than or equal to 1, the request is sent without retries.</param>
-  /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
-  /// <returns>A task that represents the asynchronous operation. The task result contains the HTTP response message returned by
-  /// the server.</returns>
-  public static Task<HttpResponseMessage> ExecuteAsync(
-    HttpClient client,
-    HttpRequestMessage request,
-    RetryConfiguration? config,
-    CancellationToken cancellationToken)
+  /// <remarks>The returned policy retries on HTTP request exceptions and on HTTP responses that match the
+  /// status code condition defined in the configuration. The delay between retries increases exponentially with each
+  /// attempt and includes a random jitter to reduce contention. If the configuration's MaxAttempts is less than or
+  /// equal to 1, no retries are performed.</remarks>
+  /// <param name="config">The retry configuration that defines the maximum number of attempts, status code matching logic, and optional
+  /// randomization seed. Cannot be null.</param>
+  /// <returns>An asynchronous policy that retries failed HTTP requests according to the provided configuration. Returns a no-op
+  /// policy if the configuration is null or specifies one or fewer attempts.</returns>
+  public static IAsyncPolicy<HttpResponseMessage> CreatePolicy(
+    RetryConfiguration? config)
   {
-    // No retry configured or effectively 1 attempt -> just send
     if (config is null || config.MaxAttempts <= 1)
     {
-      return client.SendAsync(request, cancellationToken);
+      return Policy.NoOpAsync<HttpResponseMessage>();
     }
 
     var retries = config.MaxAttempts - 1;
-    
     if (retries <= 0)
     {
-      return client.SendAsync(request, cancellationToken);
+      return Policy.NoOpAsync<HttpResponseMessage>();
     }
 
-    var random = config.Seed is int seed
-      ? new Random(seed)
-      : Random.Shared;
-
-    var policy = Policy
+    return Policy
       .Handle<HttpRequestException>()
-      .OrResult<HttpResponseMessage>(x =>
+      .OrResult<HttpResponseMessage>(response =>
       {
-        var method = x.RequestMessage?.Method 
-          ?? HttpMethod.Get;
-        
-        return config.StatusCodeMatchingCondition(
-          x.StatusCode, 
-          method);
+        var method = response.RequestMessage?.Method ?? HttpMethod.Get;
+        return config.StatusCodeMatchingCondition(response.StatusCode, method);
       })
       .WaitAndRetryAsync(
         retries,
         attempt =>
         {
-          // simple exponential backoff + jitter
-          var baseDelay = TimeSpan.FromMilliseconds(200 * Math.Pow(2, attempt - 1));
-          var jitter = TimeSpan.FromMilliseconds(random.Next(0, 200));
+          var random = config.Seed is int seed
+            ? new Random(seed + attempt)
+            : Random.Shared;
+
+          var baseDelay = TimeSpan.FromMilliseconds(
+            200 * Math.Pow(2, attempt - 1));
+
+          var jitter = TimeSpan.FromMilliseconds(
+            random.Next(0, 200));
+
           return baseDelay + jitter;
         });
-
-    return policy.ExecuteAsync((_, ct) => 
-      client.SendAsync(request, ct),
-      [],
-      cancellationToken);
   }
 }

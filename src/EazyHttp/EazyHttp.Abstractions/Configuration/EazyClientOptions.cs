@@ -72,11 +72,30 @@ public sealed class EazyClientOptions
   /// </para>
   /// <para>
   /// If this delegate is <c>null</c>, EazyHttp will fall back to looking up
-  /// the client in <see cref="SerializerOptions"/> and, if no match is found,
+  /// the client in <see cref="RequestSerializerOptions"/> and, if no match is found,
   /// to a runtime-specific default.
   /// </para>
   /// </remarks>
-  public Func<ClientContext, JsonSerializerOptions>? ResolveSerializer { get; set; }
+  public Func<ClientContext, JsonSerializerOptions?>? ResolveRequestSerializer { get; set; }
+
+  /// <summary>
+  /// Gets or sets an optional resolver used to obtain serializer options
+  /// for a specific client at runtime.
+  /// </summary>
+  /// <remarks>
+  /// <para>
+  /// The runtime library can invoke this delegate to compute an
+  /// <see cref="JsonSerializerOptions"/> instance for a given client,
+  /// typically using the information in the provided <see cref="ClientContext"/>
+  /// (for example, the client name and the <see cref="System.IServiceProvider"/>).
+  /// </para>
+  /// <para>
+  /// If this delegate is <c>null</c>, EazyHttp will fall back to looking up
+  /// the client in <see cref="ResponseSerializerOptions"/> and, if no match is found,
+  /// to a runtime-specific default.
+  /// </para>
+  /// </remarks>
+  public Func<ClientContext, JsonSerializerOptions?>? ResolveResponseSerializer { get; set; }
 
   /// <summary>
   /// Gets or sets an optional resolver used to obtain retry configuration
@@ -94,7 +113,7 @@ public sealed class EazyClientOptions
   /// to a runtime-specific default retry configuration.
   /// </para>
   /// </remarks>
-  public Func<ClientContext, RetryConfiguration>? ResolveRetry { get; set; }
+  public Func<ClientContext, RetryConfiguration?>? ResolveRetry { get; set; }
 
   /// <summary>
   /// Gets or sets an optional resolver used to obtain the text encoding
@@ -112,7 +131,7 @@ public sealed class EazyClientOptions
   /// to a runtime-specific default (commonly <see cref="Encoding.UTF8"/>).
   /// </para>
   /// </remarks>
-  public Func<ClientContext, Encoding>? ResolveEncoding { get; set; }
+  public Func<ClientContext, Encoding?>? ResolveEncoding { get; set; }
 
   /// <summary>
   /// Gets or sets an optional resolver used to obtain persistent headers
@@ -131,7 +150,7 @@ public sealed class EazyClientOptions
   /// will treat the client as having no additional persistent headers.
   /// </para>
   /// </remarks>
-  public Func<ClientContext, IEnumerable<RequestHeader>>? ResolveHeaders { get; set; }
+  public Func<ClientContext, IEnumerable<RequestHeader>?>? ResolveHeaders { get; set; }
 
   /// <summary>
   /// Gets a mapping from client name to serializer options.
@@ -143,11 +162,27 @@ public sealed class EazyClientOptions
   /// </para>
   /// <para>
   /// At runtime, this dictionary may be used directly, or via the
-  /// <see cref="ResolveSerializer"/> delegate if that delegate chooses
+  /// <see cref="ResolveRequestSerializer"/> delegate if that delegate chooses
   /// to consult it.
   /// </para>
   /// </remarks>
-  public Dictionary<string, JsonSerializerOptions> SerializerOptions { get; } = [];
+  public Dictionary<string, JsonSerializerOptions> RequestSerializerOptions { get; } = [];
+
+  /// <summary>
+  /// Gets a mapping from client name to serializer options.
+  /// </summary>
+  /// <remarks>
+  /// <para>
+  /// This dictionary provides a simple, configuration-based way to map
+  /// a logical client name to an <see cref="JsonSerializerOptions"/> instance.
+  /// </para>
+  /// <para>
+  /// At runtime, this dictionary may be used directly, or via the
+  /// <see cref="ResolveResponseSerializer"/> delegate if that delegate chooses
+  /// to consult it.
+  /// </para>
+  /// </remarks>
+  public Dictionary<string, JsonSerializerOptions> ResponseSerializerOptions { get; } = [];
 
   /// <summary>
   /// Gets a mapping from client name to retry configuration.
@@ -199,20 +234,33 @@ public sealed class EazyClientOptions
   public Dictionary<string, IEnumerable<RequestHeader>> PersistentHeaders { get; } = [];
 
   /// <summary>
-  /// Gets a mapping from EazyHttp client names to the handler type name or expression used for their
-  /// primary HTTP message handler.
+  /// Gets a mapping from logical EazyHttp client names to the <see cref="HttpMessageHandler"/> type
+  /// that should be used in the generated <see cref="HttpClient"/> pipeline.
   /// </summary>
   /// <remarks>
   /// <para>
   /// The key is the logical client name as configured in <see cref="Clients"/> (for example
-  /// <c>"Test1"</c>), and the value is the handler type name that will be used in generated code,
-  /// for example <c>CustomMessageHandler</c> or <c>MyApp.Http.CustomMessageHandler</c>.
+  /// <c>"Test1"</c>).
+  /// The value is a <see cref="Type"/> representing a concrete
+  /// <see cref="HttpMessageHandler"/> implementation that should be used for that client.
   /// </para>
   /// <para>
-  /// The value is used as-is in generated code; it is the consumer's responsibility to ensure that
-  /// the referenced type is available to the compiler (via appropriate using directives, full type
-  /// names, or global usings).
+  /// At code-generation time the EazyHttp source generator inspects the configured type:
+  /// if it derives from <see cref="DelegatingHandler"/>, it is registered as a delegating handler
+  /// using <c>AddHttpMessageHandler&lt;THandler&gt;()</c>; otherwise it is used as the primary
+  /// handler via <c>ConfigurePrimaryHttpMessageHandler&lt;THandler&gt;()</c>.
+  /// </para>
+  /// <para>
+  /// Only a single handler type can be configured per client via this property. If you need a more
+  /// complex pipeline (for example multiple delegating handlers), encapsulate that pipeline in your
+  /// own <see cref="DelegatingHandler"/> chain and register the outermost handler type here.
+  /// </para>
+  /// <para>
+  /// The type must be accessible to the project that consumes EazyHttp. The generator will emit
+  /// registrations using the resolved type; if the handler type cannot be found or does not derive
+  /// from <see cref="HttpMessageHandler"/>, the generated code will fail to compile with a normal
+  /// C# compiler error.
   /// </para>
   /// </remarks>
-  public Dictionary<string, string> HttpClientHandlerTypeNames { get; } = [];
+  public Dictionary<string, Type> HttpClientHandlers { get; } = [];
 }

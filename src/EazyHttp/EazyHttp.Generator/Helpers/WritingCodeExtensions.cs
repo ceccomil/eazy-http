@@ -61,7 +61,9 @@ internal static class CodeWritingExtensions
   public static string GetDiRegistrationFilename(
     this EazyClientOptionsDefinition options)
   {
-    var name = $"{options.NamespacePrefix}.DiRegistration.g.cs";
+    var ns = $"{nameof(EazyHttp)}.{Generated}.{DependencyInjection}";
+
+    var name = $"{ns}.{options.GetNameByNamespace()}.g.cs";
 
     return name;
   }
@@ -75,23 +77,37 @@ internal static class CodeWritingExtensions
 
     raw = raw.Trim();
 
-    // nameof(MyType)
-    const string nameofPrefix = "nameof(";
-    if (raw.StartsWith(nameofPrefix, StringComparison.Ordinal) &&
+    // typeof(MyType)
+    const string typeofPrefix = "typeof(";
+    if (raw.StartsWith(typeofPrefix, StringComparison.Ordinal) &&
       raw.EndsWith(")", StringComparison.Ordinal))
     {
-      var inner = raw.Substring(nameofPrefix.Length, raw.Length - nameofPrefix.Length - 1);
-      return inner.Trim(); // "MyType" (or "My.Namespace.MyType" if they wrote it)
+      var inner = raw.Substring(
+        typeofPrefix.Length, 
+        raw.Length - typeofPrefix.Length - 1);
+      
+      return inner.Trim();
     }
 
-    // "MyType"
-    if (raw.Length >= 2 && raw[0] == '"' && raw[raw.Length - 1] == '"')
-    {
-      return raw.Substring(1, raw.Length - 2); // strip quotes
-    }
-
-    // Fallback: treat as already a type name expression
-    // e.g. CustomHandler, MyApp.Http.CustomHandler, global::MyApp.Http.CustomHandler
     return raw;
+  }
+
+  public static string GetNameByNamespace(
+    this EazyClientOptionsDefinition options)
+  {
+    var sb = new StringBuilder();
+    foreach (var ch in options.NamespacePrefix)
+    {
+      if (char.IsLetterOrDigit(ch))
+      {
+        sb.Append(ch);
+      }
+    }
+
+    var safe = sb.Length > 0 
+      ? sb.ToString() 
+      : nameof(EazyHttp);
+
+    return $"Add{safe}Clients";
   }
 }

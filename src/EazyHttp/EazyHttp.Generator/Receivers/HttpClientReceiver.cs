@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace EazyHttp.Generator.Receivers;
+﻿namespace EazyHttp.Generator.Receivers;
 
 internal static class HttpClientReceiver
 {
@@ -140,6 +138,13 @@ internal static class HttpClientReceiver
     SemanticModel semanticModel,
     EazyClientOptionsDefinition options)
   {
+    // No arguments: single shared client only
+    if (invocation.ArgumentList.Arguments.Count == 0)
+    {
+      options.Clients.Add(new("SharedClient", null, false));
+      return;
+    }
+
     // Expect exactly one argument: the config lambda
     if (invocation.ArgumentList.Arguments.Count != 1)
     {
@@ -241,10 +246,16 @@ internal static class HttpClientReceiver
           options);
         break;
 
-      case nameof(EazyClientOptions.SerializerOptions):
+      case nameof(EazyClientOptions.RequestSerializerOptions):
         TryHandleDictionaryAddInvocation(
           invocation, 
-          options.SerializerOptions);
+          options.RequestSerializerOptions);
+        break;
+
+      case nameof(EazyClientOptions.ResponseSerializerOptions):
+        TryHandleDictionaryAddInvocation(
+          invocation,
+          options.ResponseSerializerOptions);
         break;
 
       case nameof(EazyClientOptions.Retries):
@@ -265,8 +276,9 @@ internal static class HttpClientReceiver
           options.PersistentHeaders);
         break;
 
-      case nameof(EazyClientOptions.HttpClientHandlerTypeNames):
-        TryHandleDictionaryAddInvocation(
+      case nameof(EazyClientOptions.HttpClientHandlers):
+        TryAddHandler(
+          semanticModel,
           invocation,
           options.HttpClientHandlers);
         break;
@@ -459,34 +471,11 @@ internal static class HttpClientReceiver
       .Identifier
       .ValueText;
 
-    switch (propertyName)
+    if (propertyName == nameof(EazyClientOptions.NamespacePrefix))
     {
-      case nameof(EazyClientOptions.NamespacePrefix):
-        HandleNamespacePrefixAssignment(
-          assignment,
-          options);
-        break;
-
-      case nameof(EazyClientOptions.ResolveRetry):
-        HandleResolverAssignment(
-          assignment,
-          static (opts, expr) => opts.ResolveRetryExpression = expr,
-          options);
-        break;
-
-      case nameof(EazyClientOptions.ResolveEncoding):
-        HandleResolverAssignment(
-          assignment,
-          static (opts, expr) => opts.ResolveEncodingExpression = expr,
-          options);
-        break;
-
-      case nameof(EazyClientOptions.ResolveHeaders):
-        HandleResolverAssignment(
-          assignment,
-          static (opts, expr) => opts.ResolveHeadersExpression = expr,
-          options);
-        break;
+      HandleNamespacePrefixAssignment(
+        assignment,
+        options);
     }
   }
 
@@ -524,6 +513,61 @@ internal static class HttpClientReceiver
     dictionary[key] = valueCode;
   }
 
+  private static void TryAddHandler(
+    SemanticModel semanticModel,
+    InvocationExpressionSyntax invocation,
+    Dictionary<string, HandlerDefinition> dictionary)
+  {
+    // Must have exactly 2 arguments: key, value
+    var args = invocation.ArgumentList.Arguments;
+
+    if (args.Count != 2)
+    {
+      return;
+    }
+
+    // Key: must be a string literal
+    if (args[0].Expression is not LiteralExpressionSyntax keyLiteral ||
+      !keyLiteral.IsKind(SyntaxKind.StringLiteralExpression))
+    {
+      return;
+    }
+
+    var key = keyLiteral.Token.ValueText;
+    if (string.IsNullOrWhiteSpace(key))
+    {
+      return;
+    }
+
+    // Value: keep expression as code
+    var valueExpr = args[1].Expression;
+    var valueCode = valueExpr
+      .NormalizeWhitespace()
+      .ToFullString();
+
+    var isPrimary = false;
+
+    if (valueExpr is TypeOfExpressionSyntax typeOfExpr)
+    {
+      var typeInfo = semanticModel.GetTypeInfo(typeOfExpr.Type);
+      if (typeInfo.Type is INamedTypeSymbol handlerSymbol)
+      {
+        var delegatingHandlerSymbol =
+          semanticModel
+          .Compilation
+          .GetTypeByMetadataName("System.Net.Http.DelegatingHandler");
+
+        if (delegatingHandlerSymbol is not null &&
+            !InheritsFrom(handlerSymbol, delegatingHandlerSymbol))
+        {
+          isPrimary = true;
+        }
+      }
+    }
+
+    dictionary[key] = new(valueCode, isPrimary);
+  }
+
   private static void HandleNamespacePrefixAssignment(
     AssignmentExpressionSyntax assignment,
     EazyClientOptionsDefinition options)
@@ -546,18 +590,18 @@ internal static class HttpClientReceiver
     }
   }
 
-  private static void HandleResolverAssignment(
-    AssignmentExpressionSyntax assignment,
-    Action<EazyClientOptionsDefinition, string> setExpression,
-    EazyClientOptionsDefinition options)
+  private static bool InheritsFrom(
+    INamedTypeSymbol type, 
+    INamedTypeSymbol baseType)
   {
-    // We accept anything the compiler will later accept
-    var valueExpr = assignment.Right;
+    for (var current = type; current is not null; current = current.BaseType)
+    {
+      if (SymbolEqualityComparer.Default.Equals(current, baseType))
+      {
+        return true;
+      }
+    }
 
-    var valueCode = valueExpr
-      .NormalizeWhitespace()
-      .ToFullString();
-
-    setExpression(options, valueCode);
+    return false;
   }
 }

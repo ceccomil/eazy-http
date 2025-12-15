@@ -30,7 +30,12 @@ internal class HttpClientConfiguration
         x.Clients.Add(new("Test1", "https://test", true));
 
         x
-          .SerializerOptions.Add(
+          .RequestSerializerOptions.Add(
+            "Test1",
+            Tests.Data.HttpClientConfiguration._jsonOpts);
+
+        x
+          .ResponseSerializerOptions.Add(
             "Test1",
             Tests.Data.HttpClientConfiguration._jsonOpts);
 
@@ -67,13 +72,13 @@ internal class HttpClientConfiguration
         x.PersistentHeaders.Add("Test4",
           new[] { new RequestHeader("X-Api-Key", "123") });
 
-        x.HttpClientHandlerTypeNames.Add("Test1",
-          "Tests.Data.CustomMessageHandler");
+        x.HttpClientHandlers.Add("Test1",
+          typeof(Tests.Data.CustomMessageHandler));
 
-        x.HttpClientHandlerTypeNames.Add("Test3",
-          nameof(CustomMessageHandler));
+        x.HttpClientHandlers.Add("Test3",
+          typeof(CustomMessageHandler));
 
-        x.ResolveSerializer = context =>
+        x.ResolveRequestSerializer = context =>
         {
           if (context.ClientName == "Test2")
           {
@@ -84,7 +89,21 @@ internal class HttpClientConfiguration
             };
           }
 
-          return new(JsonSerializerDefaults.Web);
+          return null;
+        };
+
+        x.ResolveResponseSerializer = context =>
+        {
+          if (context.ClientName == "Test2")
+          {
+            return new(JsonSerializerDefaults.Web)
+            {
+              PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+              WriteIndented = true
+            };
+          }
+
+          return null;
         };
 
       });

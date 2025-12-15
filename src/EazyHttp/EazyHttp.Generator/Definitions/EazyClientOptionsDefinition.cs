@@ -6,7 +6,9 @@ internal sealed class EazyClientOptionsDefinition
 
   public List<HttpClientDefinition> Clients { get; } = [];
 
-  public Dictionary<string, string> SerializerOptions { get; } = [];
+  public Dictionary<string, string> RequestSerializerOptions { get; } = [];
+
+  public Dictionary<string, string> ResponseSerializerOptions { get; } = [];
 
   public Dictionary<string, string> Retries { get; } = [];
 
@@ -14,11 +16,5 @@ internal sealed class EazyClientOptionsDefinition
 
   public Dictionary<string, string> PersistentHeaders { get; } = [];
 
-  public Dictionary<string, string> HttpClientHandlers { get; } = [];
-
-  public string? ResolveRetryExpression { get; set; }
-
-  public string? ResolveEncodingExpression { get; set; }
-  
-  public string? ResolveHeadersExpression { get; set; }
+  public Dictionary<string, HandlerDefinition> HttpClientHandlers { get; } = [];
 }
