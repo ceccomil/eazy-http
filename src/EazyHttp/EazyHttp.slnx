@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../../.github/workflows/dotnet.yml" />
+    <File Path="../../README.md" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="EazyHttp.Abstractions/EazyHttp.Abstractions.csproj" />
+  <Project Path="EazyHttp.Generator.Tests/EazyHttp.Generator.Tests.csproj" />
+  <Project Path="EazyHttp.Generator/EazyHttp.Generator.csproj" />
+  <Project Path="EazyHttp.IntegrationTests/EazyHttp.IntegrationTests.csproj" />
+  <Project Path="EazyHttp/EazyHttp.csproj" />
+</Solution>
